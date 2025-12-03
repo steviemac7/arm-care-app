@@ -9,6 +9,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { db } from '../firebase'
 import { doc, setDoc, onSnapshot, arrayUnion } from 'firebase/firestore'
 import { History } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 export default function Dashboard() {
     const [activeTab, setActiveTab] = useState(programs[0].name)
@@ -143,6 +144,14 @@ export default function Dashboard() {
             <div className="max-w-4xl mx-auto">
                 <header className="mb-8 text-center relative">
                     <div className="absolute right-0 top-0 flex items-center gap-4">
+                        {currentUser?.email === 'stvmcdnld@gmail.com' && (
+                            <Link
+                                to="/admin"
+                                className="text-xs text-red-500 hover:text-red-400 transition-colors font-bold"
+                            >
+                                Admin Panel
+                            </Link>
+                        )}
                         <button
                             onClick={() => setShowHistory(true)}
                             className="text-xs text-neutral-500 hover:text-red-500 transition-colors flex items-center gap-1"
@@ -178,8 +187,8 @@ export default function Dashboard() {
                             key={program.name}
                             onClick={() => setActiveTab(program.name)}
                             className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${activeTab === program.name
-                                    ? 'bg-red-600 text-white shadow-lg shadow-red-900/40'
-                                    : 'bg-neutral-900 text-neutral-400 hover:bg-neutral-800 hover:text-neutral-200'
+                                ? 'bg-red-600 text-white shadow-lg shadow-red-900/40'
+                                : 'bg-neutral-900 text-neutral-400 hover:bg-neutral-800 hover:text-neutral-200'
                                 }`}
                         >
                             {program.name}
