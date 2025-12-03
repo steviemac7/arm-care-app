@@ -61,20 +61,20 @@ function App() {
   }, [activeProgram, completedExercises, activeTab])
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-50 p-4 md:p-8 font-sans pb-24">
+    <div className="min-h-screen bg-neutral-950 text-neutral-50 p-4 md:p-8 font-sans pb-24">
       <div className="max-w-4xl mx-auto">
         <header className="mb-8 text-center">
           <div className="flex items-center justify-center gap-4 mb-4">
             <img
               src={logo}
               alt="Arm Care Pro Logo"
-              className="w-16 h-16 rounded-full border-2 border-blue-500/50 shadow-lg shadow-blue-500/20"
+              className="w-16 h-16 rounded-full border-2 border-red-600/50 shadow-lg shadow-red-900/20"
             />
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
+            <h1 className="text-3xl font-bold text-white tracking-tight">
               Arm Care Pro
             </h1>
           </div>
-          <p className="text-slate-400">Select your workout program below</p>
+          <p className="text-neutral-400">Select your workout program below</p>
         </header>
 
         {/* Tabs */}
@@ -84,8 +84,8 @@ function App() {
               key={program.name}
               onClick={() => setActiveTab(program.name)}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${activeTab === program.name
-                ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25'
-                : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-200'
+                  ? 'bg-red-600 text-white shadow-lg shadow-red-900/40'
+                  : 'bg-neutral-900 text-neutral-400 hover:bg-neutral-800 hover:text-neutral-200'
                 }`}
             >
               {program.name}
@@ -94,21 +94,21 @@ function App() {
         </div>
 
         {/* Progress Bar (Sticky Top) */}
-        <div className="sticky top-4 z-40 mb-6 bg-slate-900/90 backdrop-blur-md p-4 rounded-xl border border-slate-700 shadow-xl">
+        <div className="sticky top-4 z-40 mb-6 bg-neutral-950/90 backdrop-blur-md p-4 rounded-xl border border-neutral-800 shadow-xl">
           <div className="flex justify-between text-sm font-medium mb-2">
-            <span className="text-blue-300">Progress</span>
-            <span className="text-slate-400">{progressStats.completed} / {progressStats.total} Completed</span>
+            <span className="text-red-500">Progress</span>
+            <span className="text-neutral-400">{progressStats.completed} / {progressStats.total} Completed</span>
           </div>
-          <div className="h-3 bg-slate-800 rounded-full overflow-hidden">
+          <div className="h-3 bg-neutral-900 rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-blue-500 to-cyan-400 transition-all duration-500 ease-out"
+              className="h-full bg-gradient-to-r from-red-600 to-red-500 transition-all duration-500 ease-out"
               style={{ width: `${progressStats.percent}%` }}
             />
           </div>
         </div>
 
         {/* Content */}
-        <div className="bg-slate-800/50 rounded-2xl p-6 shadow-xl border border-slate-700/50 backdrop-blur-sm">
+        <div className="bg-neutral-900/50 rounded-2xl p-6 shadow-xl border border-neutral-800 backdrop-blur-sm">
           {activeProgram && (
             <ProgramView
               program={activeProgram}

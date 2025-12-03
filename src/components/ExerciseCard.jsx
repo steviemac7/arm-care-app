@@ -8,14 +8,14 @@ export default function ExerciseCard({ exercise, onPlayVideo, isCompleted, onTog
             className={`
                 rounded-xl p-4 border transition-all duration-200 group relative overflow-hidden
                 ${isCompleted
-                    ? 'bg-slate-800/50 border-blue-500/30'
-                    : 'bg-slate-800 border-slate-700 hover:border-blue-500/50'
+                    ? 'bg-neutral-900/50 border-red-500/30'
+                    : 'bg-neutral-900 border-neutral-800 hover:border-red-500/50'
                 }
             `}
         >
             {/* Progress Background Fill */}
             <div
-                className={`absolute inset-0 bg-blue-500/5 transition-transform duration-500 ease-out origin-left ${isCompleted ? 'scale-x-100' : 'scale-x-0'
+                className={`absolute inset-0 bg-red-600/10 transition-transform duration-500 ease-out origin-left ${isCompleted ? 'scale-x-100' : 'scale-x-0'
                     }`}
             />
 
@@ -24,7 +24,7 @@ export default function ExerciseCard({ exercise, onPlayVideo, isCompleted, onTog
                     {/* Checkbox */}
                     <button
                         onClick={onToggle}
-                        className={`mt-1 transition-colors ${isCompleted ? 'text-blue-400' : 'text-slate-600 hover:text-slate-400'
+                        className={`mt-1 transition-colors ${isCompleted ? 'text-red-500' : 'text-neutral-600 hover:text-neutral-400'
                             }`}
                     >
                         {isCompleted ? (
@@ -35,11 +35,11 @@ export default function ExerciseCard({ exercise, onPlayVideo, isCompleted, onTog
                     </button>
 
                     <div>
-                        <h4 className={`font-medium transition-colors ${isCompleted ? 'text-slate-400 line-through' : 'text-slate-200 group-hover:text-blue-300'
+                        <h4 className={`font-medium transition-colors ${isCompleted ? 'text-neutral-500 line-through' : 'text-neutral-200 group-hover:text-red-400'
                             }`}>
                             {exercise.name}
                         </h4>
-                        <div className="flex items-center gap-4 mt-2 text-xs text-slate-400">
+                        <div className="flex items-center gap-4 mt-2 text-xs text-neutral-400">
                             <div className="flex items-center gap-1">
                                 {exercise.reps && (exercise.reps.includes('sec') || exercise.reps.includes('min')) ? (
                                     <Clock className="w-3 h-3" />
@@ -55,7 +55,7 @@ export default function ExerciseCard({ exercise, onPlayVideo, isCompleted, onTog
                 {hasVideo && (
                     <button
                         onClick={() => onPlayVideo(exercise.video, exercise.timestamp)}
-                        className="text-slate-500 hover:text-red-400 transition-colors"
+                        className="text-neutral-500 hover:text-red-400 transition-colors"
                         title="Watch Video"
                     >
                         <PlayCircle className="w-6 h-6" />
