@@ -22,8 +22,8 @@ export default function ExerciseCard({ exercise, onPlayVideo, isCompleted, onTog
         gain.gain.setValueAtTime(0.1, ctx.currentTime)
 
         osc.start()
-        gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + 0.5)
-        osc.stop(ctx.currentTime + 0.5)
+        gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + 2.0)
+        osc.stop(ctx.currentTime + 2.0)
     }
 
     useEffect(() => {
