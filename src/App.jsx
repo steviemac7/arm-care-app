@@ -3,6 +3,7 @@ import { programs } from './data/exercises'
 import ProgramView from './components/ProgramView'
 import VideoModal from './components/VideoModal'
 import logo from './assets/logo.jpg'
+import completionSound from './assets/completion.m4a'
 
 function App() {
   const [activeTab, setActiveTab] = useState(programs[0].name)
@@ -60,6 +61,14 @@ function App() {
     }
   }, [activeProgram, completedExercises, activeTab])
 
+  // Play sound on completion
+  useEffect(() => {
+    if (progressStats.percent === 100 && progressStats.total > 0) {
+      const audio = new Audio(completionSound)
+      audio.play().catch(e => console.log('Audio play failed:', e))
+    }
+  }, [progressStats.percent, progressStats.total])
+
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-50 p-4 md:p-8 font-sans pb-24">
       <div className="max-w-4xl mx-auto">
@@ -84,8 +93,8 @@ function App() {
               key={program.name}
               onClick={() => setActiveTab(program.name)}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${activeTab === program.name
-                  ? 'bg-red-600 text-white shadow-lg shadow-red-900/40'
-                  : 'bg-neutral-900 text-neutral-400 hover:bg-neutral-800 hover:text-neutral-200'
+                ? 'bg-red-600 text-white shadow-lg shadow-red-900/40'
+                : 'bg-neutral-900 text-neutral-400 hover:bg-neutral-800 hover:text-neutral-200'
                 }`}
             >
               {program.name}
