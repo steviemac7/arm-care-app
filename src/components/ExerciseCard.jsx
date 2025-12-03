@@ -1,6 +1,5 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { PlayCircle, Clock, Repeat, CheckCircle2, Circle, Play, Pause, RotateCcw } from 'lucide-react'
-import completionSound from '../assets/completion.m4a'
 
 export default function ExerciseCard({ exercise, onPlayVideo, isCompleted, onToggle }) {
     const hasVideo = exercise.video && exercise.video !== 'None'
@@ -9,7 +8,23 @@ export default function ExerciseCard({ exercise, onPlayVideo, isCompleted, onTog
     const [duration, setDuration] = useState(0)
     const [timeLeft, setTimeLeft] = useState(0)
     const [isActive, setIsActive] = useState(false)
-    const audioRef = useRef(new Audio(completionSound))
+
+    const playPing = () => {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)()
+        const osc = ctx.createOscillator()
+        const gain = ctx.createGain()
+
+        osc.connect(gain)
+        gain.connect(ctx.destination)
+
+        osc.type = "sine"
+        osc.frequency.setValueAtTime(880, ctx.currentTime)
+        gain.gain.setValueAtTime(0.1, ctx.currentTime)
+
+        osc.start()
+        gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + 0.5)
+        osc.stop(ctx.currentTime + 0.5)
+    }
 
     useEffect(() => {
         if (exercise.reps) {
@@ -37,7 +52,7 @@ export default function ExerciseCard({ exercise, onPlayVideo, isCompleted, onTog
             }, 1000)
         } else if (timeLeft === 0 && isActive) {
             setIsActive(false)
-            audioRef.current.play().catch(e => console.error("Audio play failed", e))
+            playPing()
         }
         return () => clearInterval(interval)
     }, [isActive, timeLeft])
