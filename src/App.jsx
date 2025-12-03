@@ -122,7 +122,17 @@ function App() {
         <div className="sticky top-4 z-40 mb-6 bg-neutral-950/90 backdrop-blur-md p-4 rounded-xl border border-neutral-800 shadow-xl">
           <div className="flex justify-between text-sm font-medium mb-2">
             <span className="text-red-500">Progress</span>
-            <span className="text-neutral-400">{progressStats.completed} / {progressStats.total} Completed</span>
+            <div className="flex items-center gap-4">
+              <span className="text-neutral-400">{progressStats.completed} / {progressStats.total} Completed</span>
+              {progressStats.completed > 0 && (
+                <button
+                  onClick={() => setCompletedExercises(prev => ({ ...prev, [activeTab]: {} }))}
+                  className="text-xs text-red-500 hover:text-red-400 underline transition-colors"
+                >
+                  Reset
+                </button>
+              )}
+            </div>
           </div>
           <div className="h-3 bg-neutral-900 rounded-full overflow-hidden">
             <div
