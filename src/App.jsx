@@ -27,12 +27,36 @@ function App() {
   }
 
   const toggleExercise = (exerciseName) => {
+    // Calculate new state locally to check for completion immediately
+    const prevProgramState = completedExercises[activeTab] || {}
+    const isNowCompleted = !prevProgramState[exerciseName]
+    const newProgramState = { ...prevProgramState, [exerciseName]: isNowCompleted }
+
+    // Check completion
+    let total = 0
+    let completedCount = 0
+
+    activeProgram.sections.forEach(section => {
+      section.subSections.forEach(sub => {
+        sub.exercises.forEach(ex => {
+          total++
+          if (ex.name === exerciseName ? isNowCompleted : prevProgramState[ex.name]) {
+            completedCount++
+          }
+        })
+      })
+    })
+
+    // Play sound if all completed
+    if (completedCount === total && total > 0) {
+      const audio = new Audio(completionSound)
+      audio.play().catch(e => console.error('Audio play failed:', e))
+    }
+
+    // Update state
     setCompletedExercises(prev => ({
       ...prev,
-      [activeTab]: {
-        ...prev[activeTab],
-        [exerciseName]: !prev[activeTab]?.[exerciseName]
-      }
+      [activeTab]: newProgramState
     }))
   }
 
@@ -60,14 +84,6 @@ function App() {
       percent: total === 0 ? 0 : Math.round((completed / total) * 100)
     }
   }, [activeProgram, completedExercises, activeTab])
-
-  // Play sound on completion
-  useEffect(() => {
-    if (progressStats.percent === 100 && progressStats.total > 0) {
-      const audio = new Audio(completionSound)
-      audio.play().catch(e => console.log('Audio play failed:', e))
-    }
-  }, [progressStats.percent, progressStats.total])
 
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-50 p-4 md:p-8 font-sans pb-24">
