@@ -1,0 +1,131 @@
+import { useState, useEffect, useMemo } from 'react'
+import { programs } from './data/exercises'
+import ProgramView from './components/ProgramView'
+import VideoModal from './components/VideoModal'
+import { Dumbbell } from 'lucide-react'
+
+function App() {
+  const [activeTab, setActiveTab] = useState(programs[0].name)
+  const [videoState, setVideoState] = useState(null)
+
+  // Load saved progress from localStorage
+  const [completedExercises, setCompletedExercises] = useState(() => {
+    const saved = localStorage.getItem('armCareProgress')
+    return saved ? JSON.parse(saved) : {}
+  })
+
+  // Save progress whenever it changes
+  useEffect(() => {
+    localStorage.setItem('armCareProgress', JSON.stringify(completedExercises))
+  }, [completedExercises])
+
+  const activeProgram = programs.find(p => p.name === activeTab)
+
+  const handlePlayVideo = (url, timestamp) => {
+    setVideoState({ url, timestamp })
+  }
+
+  const toggleExercise = (exerciseName) => {
+    setCompletedExercises(prev => ({
+      ...prev,
+      [activeTab]: {
+        ...prev[activeTab],
+        [exerciseName]: !prev[activeTab]?.[exerciseName]
+      }
+    }))
+  }
+
+  // Calculate progress stats
+  const progressStats = useMemo(() => {
+    if (!activeProgram) return { total: 0, completed: 0, percent: 0 }
+
+    let total = 0
+    let completed = 0
+
+    activeProgram.sections.forEach(section => {
+      section.subSections.forEach(sub => {
+        sub.exercises.forEach(ex => {
+          total++
+          if (completedExercises[activeTab]?.[ex.name]) {
+            completed++
+          }
+        })
+      })
+    })
+
+    return {
+      total,
+      completed,
+      percent: total === 0 ? 0 : Math.round((completed / total) * 100)
+    }
+  }, [activeProgram, completedExercises, activeTab])
+
+  return (
+    <div className="min-h-screen bg-slate-900 text-slate-50 p-4 md:p-8 font-sans pb-24">
+      <div className="max-w-4xl mx-auto">
+        <header className="mb-8 text-center">
+          <div className="flex items-center justify-center gap-3 mb-2">
+            <Dumbbell className="w-8 h-8 text-blue-400" />
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
+              Arm Care Pro
+            </h1>
+          </div>
+          <p className="text-slate-400">Select your workout program below</p>
+        </header>
+
+        {/* Tabs */}
+        <div className="flex flex-wrap gap-2 mb-8 justify-center">
+          {programs.map((program) => (
+            <button
+              key={program.name}
+              onClick={() => setActiveTab(program.name)}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${activeTab === program.name
+                  ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25'
+                  : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-200'
+                }`}
+            >
+              {program.name}
+            </button>
+          ))}
+        </div>
+
+        {/* Progress Bar (Sticky Top) */}
+        <div className="sticky top-4 z-40 mb-6 bg-slate-900/90 backdrop-blur-md p-4 rounded-xl border border-slate-700 shadow-xl">
+          <div className="flex justify-between text-sm font-medium mb-2">
+            <span className="text-blue-300">Progress</span>
+            <span className="text-slate-400">{progressStats.completed} / {progressStats.total} Completed</span>
+          </div>
+          <div className="h-3 bg-slate-800 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-r from-blue-500 to-cyan-400 transition-all duration-500 ease-out"
+              style={{ width: `${progressStats.percent}%` }}
+            />
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="bg-slate-800/50 rounded-2xl p-6 shadow-xl border border-slate-700/50 backdrop-blur-sm">
+          {activeProgram && (
+            <ProgramView
+              program={activeProgram}
+              onPlayVideo={handlePlayVideo}
+              completedExercises={completedExercises[activeTab] || {}}
+              onToggleExercise={toggleExercise}
+            />
+          )}
+        </div>
+      </div>
+
+      {/* Video Modal */}
+      {videoState && (
+        <VideoModal
+          videoUrl={videoState.url}
+          timestamp={videoState.timestamp}
+          onClose={() => setVideoState(null)}
+        />
+      )}
+    </div>
+  )
+}
+
+export default App
