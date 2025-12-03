@@ -1,7 +1,63 @@
-import { PlayCircle, Clock, Repeat, CheckCircle2, Circle } from 'lucide-react'
+import { useState, useEffect, useRef } from 'react'
+import { PlayCircle, Clock, Repeat, CheckCircle2, Circle, Play, Pause, RotateCcw } from 'lucide-react'
+import completionSound from '../assets/completion.m4a'
 
 export default function ExerciseCard({ exercise, onPlayVideo, isCompleted, onToggle }) {
     const hasVideo = exercise.video && exercise.video !== 'None'
+
+    // Timer Logic
+    const [duration, setDuration] = useState(0)
+    const [timeLeft, setTimeLeft] = useState(0)
+    const [isActive, setIsActive] = useState(false)
+    const audioRef = useRef(new Audio(completionSound))
+
+    useEffect(() => {
+        if (exercise.reps) {
+            const reps = exercise.reps.toLowerCase()
+            let time = 0
+
+            if (reps.includes('sec')) {
+                time = parseInt(reps)
+            } else if (reps.includes('min')) {
+                time = parseInt(reps) * 60
+            }
+
+            if (time > 0) {
+                setDuration(time)
+                setTimeLeft(time)
+            }
+        }
+    }, [exercise.reps])
+
+    useEffect(() => {
+        let interval = null
+        if (isActive && timeLeft > 0) {
+            interval = setInterval(() => {
+                setTimeLeft(time => time - 1)
+            }, 1000)
+        } else if (timeLeft === 0 && isActive) {
+            setIsActive(false)
+            audioRef.current.play().catch(e => console.error("Audio play failed", e))
+        }
+        return () => clearInterval(interval)
+    }, [isActive, timeLeft])
+
+    const toggleTimer = () => {
+        setIsActive(!isActive)
+    }
+
+    const resetTimer = () => {
+        setIsActive(false)
+        setTimeLeft(duration)
+    }
+
+    const formatTime = (seconds) => {
+        const mins = Math.floor(seconds / 60)
+        const secs = seconds % 60
+        return `${mins}:${secs.toString().padStart(2, '0')}`
+    }
+
+    const isTimeBased = duration > 0
 
     return (
         <div
@@ -34,14 +90,15 @@ export default function ExerciseCard({ exercise, onPlayVideo, isCompleted, onTog
                         )}
                     </button>
 
-                    <div>
+                    <div className="flex-1">
                         <h4 className={`font-medium transition-colors ${isCompleted ? 'text-neutral-500 line-through' : 'text-neutral-200 group-hover:text-red-400'
                             }`}>
                             {exercise.name}
                         </h4>
-                        <div className="flex items-center gap-4 mt-2 text-xs text-neutral-400">
+
+                        <div className="flex flex-wrap items-center gap-4 mt-2 text-xs text-neutral-400">
                             <div className="flex items-center gap-1">
-                                {exercise.reps && (exercise.reps.includes('sec') || exercise.reps.includes('min')) ? (
+                                {isTimeBased ? (
                                     <Clock className="w-3 h-3" />
                                 ) : (
                                     <Repeat className="w-3 h-3" />
@@ -49,6 +106,29 @@ export default function ExerciseCard({ exercise, onPlayVideo, isCompleted, onTog
                                 <span>{exercise.reps || 'N/A'}</span>
                             </div>
                         </div>
+
+                        {/* Timer UI */}
+                        {isTimeBased && !isCompleted && (
+                            <div className="mt-3 flex items-center gap-3 bg-neutral-950/50 p-2 rounded-lg border border-neutral-800 w-fit">
+                                <span className={`font-mono text-lg font-bold ${timeLeft === 0 ? 'text-red-500' : 'text-white'}`}>
+                                    {formatTime(timeLeft)}
+                                </span>
+                                <div className="flex items-center gap-1">
+                                    <button
+                                        onClick={toggleTimer}
+                                        className="p-1.5 rounded-full bg-neutral-800 hover:bg-red-600 hover:text-white text-neutral-400 transition-colors"
+                                    >
+                                        {isActive ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
+                                    </button>
+                                    <button
+                                        onClick={resetTimer}
+                                        className="p-1.5 rounded-full bg-neutral-800 hover:bg-neutral-700 text-neutral-400 transition-colors"
+                                    >
+                                        <RotateCcw className="w-3 h-3" />
+                                    </button>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
 
