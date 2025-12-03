@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { programs } from './data/exercises'
 import ProgramView from './components/ProgramView'
 import VideoModal from './components/VideoModal'
-import { Dumbbell } from 'lucide-react'
+import logo from './assets/logo.jpg'
 
 function App() {
   const [activeTab, setActiveTab] = useState(programs[0].name)
@@ -64,8 +64,12 @@ function App() {
     <div className="min-h-screen bg-slate-900 text-slate-50 p-4 md:p-8 font-sans pb-24">
       <div className="max-w-4xl mx-auto">
         <header className="mb-8 text-center">
-          <div className="flex items-center justify-center gap-3 mb-2">
-            <Dumbbell className="w-8 h-8 text-blue-400" />
+          <div className="flex items-center justify-center gap-4 mb-4">
+            <img
+              src={logo}
+              alt="Arm Care Pro Logo"
+              className="w-16 h-16 rounded-full border-2 border-blue-500/50 shadow-lg shadow-blue-500/20"
+            />
             <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
               Arm Care Pro
             </h1>
@@ -80,8 +84,8 @@ function App() {
               key={program.name}
               onClick={() => setActiveTab(program.name)}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${activeTab === program.name
-                  ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25'
-                  : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-200'
+                ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25'
+                : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-200'
                 }`}
             >
               {program.name}
