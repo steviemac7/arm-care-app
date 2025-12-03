@@ -415,28 +415,34 @@ export const programs = [
                 "timestamp": null
               },
               {
+                "name": "Walking Quad Stretch",
+                "reps": "90 ft",
+                "video": "https://www.youtube.com/watch?v=yjILII-tA9U&list=PLs40JY-_kVgbelr1ebNvqlknOjTJo3FGi",
+                "timestamp": "7.0"
+              },
+              {
                 "name": "Carioca",
                 "reps": "90 ft",
-                "video": null,
-                "timestamp": null
+                "video": "https://www.youtube.com/watch?v=SfJLsVnxnCE",
+                "timestamp": "7.0"
               },
               {
                 "name": "High knees",
                 "reps": "90 ft",
-                "video": null,
-                "timestamp": null
+                "video": "https://www.youtube.com/watch?v=_koAkJJVT7Y",
+                "timestamp": "4.0"
               },
               {
                 "name": "Butt Kicks",
                 "reps": "90 ft",
-                "video": null,
-                "timestamp": null
+                "video": "https://www.youtube.com/watch?v=OdoXnT4szpA",
+                "timestamp": "8.0"
               },
               {
                 "name": "Frankenstein Walks",
                 "reps": "90 ft",
-                "video": null,
-                "timestamp": null
+                "video": "https://www.youtube.com/watch?v=GRADTQKnYKk",
+                "timestamp": "8.0"
               },
               {
                 "name": "Cherry Pickers",
@@ -445,10 +451,10 @@ export const programs = [
                 "timestamp": null
               },
               {
-                "name": "Alternating Lunges with Twist",
+                "name": "Walking Lunges with Twist",
                 "reps": "90 ft",
-                "video": null,
-                "timestamp": null
+                "video": "https://www.youtube.com/watch?v=D2DwY9nTURo",
+                "timestamp": "3.0"
               },
               {
                 "name": "Sumo Walk",
