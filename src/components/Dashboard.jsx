@@ -24,6 +24,10 @@ export default function Dashboard() {
         if (!currentUser) return
 
         const userDocRef = doc(db, 'users', currentUser.uid)
+
+        // Sync email to Firestore
+        setDoc(userDocRef, { email: currentUser.email }, { merge: true })
+
         const unsubscribe = onSnapshot(userDocRef, (doc) => {
             if (doc.exists()) {
                 const data = doc.data()

@@ -50,10 +50,12 @@ export default function AdminDashboard() {
                                         <User className="w-5 h-5 text-neutral-400" />
                                     </div>
                                     <div>
-                                        <h2 className="font-bold text-lg text-white">User ID: {user.id}</h2>
-                                        {/* Note: We can't get email directly from Firestore unless we saved it there. 
-                                            If we didn't save email in the user doc, we only have the ID. 
-                                            For this implementation, we'll display the ID. */}
+                                        <h2 className="font-bold text-lg text-white">
+                                            {user.email || `User ID: ${user.id}`}
+                                        </h2>
+                                        {user.email && (
+                                            <p className="text-xs text-neutral-500">ID: {user.id}</p>
+                                        )}
                                     </div>
                                 </div>
 
