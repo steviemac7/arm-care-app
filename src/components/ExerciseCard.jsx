@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { PlayCircle, Clock, Repeat, CheckCircle2, Circle, Play, Pause, RotateCcw } from 'lucide-react'
+import { PlayCircle, Clock, Repeat, CheckCircle2, Circle, Play, Pause, RotateCcw, Maximize2 } from 'lucide-react'
+import ExpandedTimerModal from './ExpandedTimerModal'
 
 export default function ExerciseCard({ exercise, onPlayVideo, isCompleted, onToggle }) {
     const hasVideo = exercise.video && exercise.video !== 'None'
@@ -7,7 +8,18 @@ export default function ExerciseCard({ exercise, onPlayVideo, isCompleted, onTog
     // Timer Logic
     const [duration, setDuration] = useState(0)
     const [timeLeft, setTimeLeft] = useState(0)
+
     const [isActive, setIsActive] = useState(false)
+    const [isExpanded, setIsExpanded] = useState(false)
+
+    const speak = (text) => {
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel() // Clear any pending speech
+            const utterance = new SpeechSynthesisUtterance(text)
+            window.speechSynthesis.speak(utterance)
+            console.log("Speaking:", text)
+        }
+    }
 
     const playPing = () => {
         const ctx = new (window.AudioContext || window.webkitAudioContext)()
@@ -48,7 +60,20 @@ export default function ExerciseCard({ exercise, onPlayVideo, isCompleted, onTog
         let interval = null
         if (isActive && timeLeft > 0) {
             interval = setInterval(() => {
-                setTimeLeft(time => time - 1)
+                setTimeLeft(prevTime => {
+                    const newTime = prevTime - 1
+
+                    // Audio Feedback Logic
+                    if (newTime > 5 && newTime % 10 === 0) {
+                        speak(`${newTime} seconds`)
+                    } else if (newTime <= 5 && newTime > 0) {
+                        speak(newTime.toString())
+                    } else if (newTime === 0) {
+                        speak("Stop")
+                    }
+
+                    return newTime
+                })
             }, 1000)
         } else if (timeLeft === 0 && isActive) {
             setIsActive(false)
@@ -58,6 +83,9 @@ export default function ExerciseCard({ exercise, onPlayVideo, isCompleted, onTog
     }, [isActive, timeLeft])
 
     const toggleTimer = () => {
+        if (!isActive) {
+            setIsExpanded(true)
+        }
         setIsActive(!isActive)
     }
 
@@ -125,9 +153,14 @@ export default function ExerciseCard({ exercise, onPlayVideo, isCompleted, onTog
                         {/* Timer UI */}
                         {isTimeBased && !isCompleted && (
                             <div className="mt-3 flex items-center gap-3 bg-neutral-950/50 p-2 rounded-lg border border-neutral-800 w-fit">
-                                <span className={`font-mono text-lg font-bold ${timeLeft === 0 ? 'text-red-500' : 'text-white'}`}>
-                                    {formatTime(timeLeft)}
-                                </span>
+                                <button
+                                    onClick={() => setIsExpanded(true)}
+                                    className="font-mono text-lg font-bold hover:text-red-400 transition-colors text-left"
+                                >
+                                    <span className={timeLeft === 0 ? 'text-red-500' : 'text-white'}>
+                                        {formatTime(timeLeft)}
+                                    </span>
+                                </button>
                                 <div className="flex items-center gap-1">
                                     <button
                                         onClick={toggleTimer}
@@ -142,7 +175,27 @@ export default function ExerciseCard({ exercise, onPlayVideo, isCompleted, onTog
                                         <RotateCcw className="w-3 h-3" />
                                     </button>
                                 </div>
+                                <button
+                                    onClick={() => setIsExpanded(true)}
+                                    className="p-1.5 rounded-full bg-neutral-800 hover:bg-neutral-700 text-neutral-400 transition-colors ml-1"
+                                    title="Expand Timer"
+                                >
+                                    <Maximize2 className="w-3 h-3" />
+                                </button>
                             </div>
+                        )}
+
+                        {/* Expanded Timer Modal */}
+                        {isExpanded && (
+                            <ExpandedTimerModal
+                                timeLeft={timeLeft}
+                                isActive={isActive}
+                                totalTime={duration}
+                                exerciseName={exercise.name}
+                                onToggle={toggleTimer}
+                                onReset={resetTimer}
+                                onClose={() => setIsExpanded(false)}
+                            />
                         )}
                     </div>
                 </div>
