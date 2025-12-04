@@ -40,18 +40,26 @@ export default function ExerciseCard({ exercise, onPlayVideo, isCompleted, onTog
 
     useEffect(() => {
         if (exercise.reps) {
-            const reps = exercise.reps.toLowerCase()
-            let time = 0
+            const reps = String(exercise.reps).toLowerCase()
+            // Match number followed optionally by space and then sec/min
+            // This handles "60 sec", "60sec", "2 min", "30 sec per side"
+            const match = reps.match(/(\d+)\s*(sec|min)/)
 
-            if (reps.includes('sec')) {
-                time = parseInt(reps)
-            } else if (reps.includes('min')) {
-                time = parseInt(reps) * 60
-            }
+            if (match) {
+                const value = parseInt(match[1])
+                const unit = match[2]
+                let time = 0
 
-            if (time > 0) {
-                setDuration(time)
-                setTimeLeft(time)
+                if (unit === 'sec') {
+                    time = value
+                } else if (unit === 'min') {
+                    time = value * 60
+                }
+
+                if (time > 0) {
+                    setDuration(time)
+                    setTimeLeft(time)
+                }
             }
         }
     }, [exercise.reps])
