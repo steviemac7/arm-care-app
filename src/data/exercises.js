@@ -75,13 +75,13 @@ export const programs = [
                 "name": "Side stretching",
                 "reps": "30 sec",
                 "video": "https://www.youtube.com/watch?v=DadrSfSb9fw",
-                "timestamp": "263.0"
+                "timestamp": "269.0"
               },
               {
                 "name": "Diagonal stretching",
                 "reps": "30 sec",
                 "video": "https://www.youtube.com/watch?v=DadrSfSb9fw",
-                "timestamp": "305.0"
+                "timestamp": "308.0"
               },
               {
                 "name": "Airplanes",
@@ -119,7 +119,7 @@ export const programs = [
                 "timestamp": "360.0"
               },
               {
-                "name": "Palms Up Serratus Press (Jabs)",
+                "name": "Palms Up Serratus Press (Jabs) ",
                 "reps": "1x25",
                 "video": "https://www.youtube.com/watch?v=mUjN2y7_CfM",
                 "timestamp": null
@@ -167,7 +167,7 @@ export const programs = [
                 "name": "Internal Rotation",
                 "reps": "1x25",
                 "video": "https://www.youtube.com/watch?v=DadrSfSb9fw",
-                "timestamp": "400.0"
+                "timestamp": "404.0"
               },
               {
                 "name": "External Rotation",
@@ -191,13 +191,13 @@ export const programs = [
                 "name": "Reverse Throwing",
                 "reps": "1x25",
                 "video": "https://www.youtube.com/watch?v=DadrSfSb9fw",
-                "timestamp": "530.0"
+                "timestamp": "546.0"
               },
               {
                 "name": "Forward Throwing",
                 "reps": "1x25",
                 "video": "https://www.youtube.com/watch?v=DadrSfSb9fw",
-                "timestamp": "575.0"
+                "timestamp": "589.0"
               }
             ]
           }
@@ -207,224 +207,6 @@ export const programs = [
   },
   {
     "name": "Pre-throwing with JBands",
-    "sections": [
-      {
-        "heading": "Warm-up",
-        "subSections": [
-          {
-            "subHeading": "Increase body temp",
-            "exercises": [
-              {
-                "name": "Jumping Jacks",
-                "reps": "60 sec",
-                "video": null,
-                "timestamp": null
-              },
-              {
-                "name": "Jog",
-                "reps": "2 min",
-                "video": null,
-                "timestamp": null
-              }
-            ]
-          },
-          {
-            "subHeading": "Plyometric Stretch",
-            "exercises": [
-              {
-                "name": "Shuffles",
-                "reps": "90 ft",
-                "video": null,
-                "timestamp": null
-              },
-              {
-                "name": "Walking Quad Stretch",
-                "reps": "90 ft",
-                "video": "https://www.youtube.com/watch?v=yjILII-tA9U&list=PLs40JY-_kVgbelr1ebNvqlknOjTJo3FGi",
-                "timestamp": "7.0"
-              },
-              {
-                "name": "Carioca",
-                "reps": "90 ft",
-                "video": "https://www.youtube.com/watch?v=SfJLsVnxnCE",
-                "timestamp": "7.0"
-              },
-              {
-                "name": "High knees",
-                "reps": "90 ft",
-                "video": "https://www.youtube.com/watch?v=_koAkJJVT7Y",
-                "timestamp": "4.0"
-              },
-              {
-                "name": "Butt Kicks",
-                "reps": "90 ft",
-                "video": "https://www.youtube.com/watch?v=OdoXnT4szpA",
-                "timestamp": "8.0"
-              },
-              {
-                "name": "Frankenstein Walks",
-                "reps": "90 ft",
-                "video": "https://www.youtube.com/watch?v=GRADTQKnYKk",
-                "timestamp": "8.0"
-              },
-              {
-                "name": "Cherry Pickers",
-                "reps": "90 ft",
-                "video": null,
-                "timestamp": null
-              },
-              {
-                "name": "Walking Lunges with Twist",
-                "reps": "90 ft",
-                "video": "https://www.youtube.com/watch?v=D2DwY9nTURo",
-                "timestamp": "3.0"
-              },
-              {
-                "name": "Sumo Walk",
-                "reps": "90 ft",
-                "video": null,
-                "timestamp": null
-              }
-            ]
-          },
-          {
-            "subHeading": "Blood flow to arm",
-            "exercises": [
-              {
-                "name": "Arm Circles - Forward Palm Down",
-                "reps": "30 sec",
-                "video": null,
-                "timestamp": null
-              },
-              {
-                "name": "Arm Circles - Forward Palm Up",
-                "reps": "30 sec",
-                "video": null,
-                "timestamp": null
-              },
-              {
-                "name": "Arm Circles - Backward Palm Down",
-                "reps": "30 sec",
-                "video": null,
-                "timestamp": null
-              },
-              {
-                "name": "Arm Circles - Backward Palm Up",
-                "reps": "30 sec",
-                "video": null,
-                "timestamp": null
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "heading": "Dual Arm",
-        "subSections": [
-          {
-            "subHeading": "Stretch",
-            "exercises": [
-              {
-                "name": "Side stretching",
-                "reps": "30 sec",
-                "video": "https://www.youtube.com/watch?v=DadrSfSb9fw",
-                "timestamp": "263.0"
-              },
-              {
-                "name": "Diagonal stretching",
-                "reps": "30 sec",
-                "video": "https://www.youtube.com/watch?v=DadrSfSb9fw",
-                "timestamp": "305.0"
-              },
-              {
-                "name": "Airplanes",
-                "reps": "30 sec",
-                "video": "https://www.youtube.com/watch?v=qFiJTyv8IqM",
-                "timestamp": null
-              },
-              {
-                "name": "Reverse Airplanes",
-                "reps": "30 sec",
-                "video": "https://www.youtube.com/watch?v=rypeT1t3s5E",
-                "timestamp": null
-              }
-            ]
-          },
-          {
-            "subHeading": "Strength",
-            "exercises": [
-              {
-                "name": "Tricep extension",
-                "reps": "1x25",
-                "video": "https://www.youtube.com/watch?v=4exTxkCijts",
-                "timestamp": null
-              },
-              {
-                "name": "Forward Flies",
-                "reps": "1x25",
-                "video": "https://www.youtube.com/watch?v=DadrSfSb9fw",
-                "timestamp": "332.0"
-              },
-              {
-                "name": "Reverse Flies",
-                "reps": "1x25",
-                "video": "https://www.youtube.com/watch?v=DadrSfSb9fw",
-                "timestamp": "360.0"
-              },
-              {
-                "name": "Rows",
-                "reps": "1x25",
-                "video": "https://www.youtube.com/watch?v=df4pTYyktSY",
-                "timestamp": null
-              },
-              {
-                "name": "Bicep Curls",
-                "reps": "1x25",
-                "video": "https://www.youtube.com/watch?v=USxpqO4SbiY",
-                "timestamp": null
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "heading": "Throwing Arm",
-        "subSections": [
-          {
-            "subHeading": "Strength",
-            "exercises": [
-              {
-                "name": "Elevated Internal Rotation",
-                "reps": "1x25",
-                "video": "https://www.youtube.com/watch?v=ueWEIM5lVT0",
-                "timestamp": null
-              },
-              {
-                "name": "Elevated External Rotation",
-                "reps": "1x25",
-                "video": "https://www.youtube.com/watch?v=ZnuUI7xh0gU",
-                "timestamp": null
-              },
-              {
-                "name": "Reverse Throwing",
-                "reps": "1x25",
-                "video": "https://www.youtube.com/watch?v=DadrSfSb9fw",
-                "timestamp": "530.0"
-              },
-              {
-                "name": "Forward Throwing",
-                "reps": "1x25",
-                "video": "https://www.youtube.com/watch?v=DadrSfSb9fw",
-                "timestamp": "575.0"
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "name": "Pre-throwing without JBands",
     "sections": [
       {
         "heading": "Warm-up",
@@ -570,19 +352,19 @@ export const programs = [
                 "name": "Cross Arm Stretch",
                 "reps": "30 sec per side",
                 "video": "https://www.youtube.com/watch?v=-1K0m5ywRcY",
-                "timestamp": null
+                "timestamp": "9.0"
               },
               {
                 "name": "Wrist Extensor Stretch",
                 "reps": "30 sec per side",
                 "video": "https://www.youtube.com/watch?v=_uINTR_7X-g",
-                "timestamp": null
+                "timestamp": "11.0"
               },
               {
                 "name": "Wrist Flexor Stretch",
                 "reps": "30 sec per side",
                 "video": "https://www.youtube.com/watch?v=HMEg5VIPrOQ",
-                "timestamp": null
+                "timestamp": "15.0"
               }
             ]
           }
