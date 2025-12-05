@@ -19,6 +19,7 @@
     - Displays workout programs (Pre-Throwing, Post-Throwing, etc.).
     - Tracks daily progress with a visual progress bar.
     - "Reset" functionality for daily routines.
+    - **Manual Submission:** "Finish Workout" button to save progress at any time.
 - **Exercise Interface:**
     - List of exercises with video tutorials (modal popup).
     - **Timer/Countdown:** Built-in timer for timed exercises.

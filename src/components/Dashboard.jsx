@@ -72,44 +72,8 @@ export default function Dashboard() {
         // Save to Firestore
         saveProgress(newCompletedExercises)
 
-        // Check completion
-        let total = 0
-        let completedCount = 0
-
-        activeProgram.sections.forEach(section => {
-            section.subSections.forEach(sub => {
-                sub.exercises.forEach(ex => {
-                    total++
-                    if (ex.name === exerciseName ? isNowCompleted : prevProgramState[ex.name]) {
-                        completedCount++
-                    }
-                })
-            })
-        })
-
-        // If completed, play sound and save to history
-        if (completedCount === total && total > 0) {
-            const audio = new Audio(completionSound)
-            audio.play().catch(e => console.error('Audio play failed:', e))
-
-            // Add to history if not already added recently (simple debounce check could be added here, 
-            // but for now we'll trust the user not to spam-toggle the last item)
-            if (currentUser) {
-                try {
-                    const userDocRef = doc(db, 'users', currentUser.uid)
-                    await setDoc(userDocRef, {
-                        history: arrayUnion({
-                            date: new Date().toISOString(),
-                            program: activeTab,
-                            completed: total,
-                            total: total
-                        })
-                    }, { merge: true })
-                } catch (error) {
-                    console.error("Error saving history:", error)
-                }
-            }
-        }
+        // Save to Firestore
+        saveProgress(newCompletedExercises)
     }
 
     const toggleExerciseGroup = async (exerciseNames) => {
@@ -138,7 +102,13 @@ export default function Dashboard() {
         // Save to Firestore
         saveProgress(newCompletedExercises)
 
-        // Check completion (re-using logic from toggleExercise)
+        // Save to Firestore
+        saveProgress(newCompletedExercises)
+    }
+
+    const finishWorkout = async () => {
+        if (!activeProgram) return
+
         let total = 0
         let completedCount = 0
 
@@ -146,16 +116,14 @@ export default function Dashboard() {
             section.subSections.forEach(sub => {
                 sub.exercises.forEach(ex => {
                     total++
-                    // Use new state for current exercises, old state for others
-                    if (newProgramState[ex.name]) {
+                    if (completedExercises[activeTab]?.[ex.name]) {
                         completedCount++
                     }
                 })
             })
         })
 
-        // If completed, play sound and save to history
-        if (completedCount === total && total > 0) {
+        if (completedCount > 0) {
             const audio = new Audio(completionSound)
             audio.play().catch(e => console.error('Audio play failed:', e))
 
@@ -166,14 +134,20 @@ export default function Dashboard() {
                         history: arrayUnion({
                             date: new Date().toISOString(),
                             program: activeTab,
-                            completed: total,
+                            completed: completedCount,
                             total: total
                         })
                     }, { merge: true })
+
+                    // Optional: Show feedback
+                    alert(`Workout saved! ${completedCount}/${total} exercises completed.`)
                 } catch (error) {
                     console.error("Error saving history:", error)
+                    alert("Failed to save workout. Please try again.")
                 }
             }
+        } else {
+            alert("No exercises completed yet!")
         }
     }
 
@@ -271,6 +245,12 @@ export default function Dashboard() {
                         <span className="text-red-500">Progress</span>
                         <div className="flex items-center gap-4">
                             <span className="text-neutral-400">{progressStats.completed} / {progressStats.total} Completed</span>
+                            <button
+                                onClick={finishWorkout}
+                                className="px-3 py-1 bg-red-600 hover:bg-red-500 text-white text-xs font-bold rounded-full transition-colors shadow-lg shadow-red-900/20"
+                            >
+                                Finish Workout
+                            </button>
                             {progressStats.completed > 0 && (
                                 <button
                                     onClick={handleReset}
