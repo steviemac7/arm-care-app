@@ -21,6 +21,7 @@
     - "Reset" functionality for daily routines.
 - **Exercise Interface:**
     - List of exercises with video tutorials (modal popup).
+    - **Timer/Countdown:** Built-in timer for timed exercises.
     - Toggle completion status for each exercise.
 - **History Tracking:**
     - Saves completed workouts to Firestore.

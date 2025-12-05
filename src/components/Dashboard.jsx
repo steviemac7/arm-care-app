@@ -112,6 +112,71 @@ export default function Dashboard() {
         }
     }
 
+    const toggleExerciseGroup = async (exerciseNames) => {
+        // Calculate new state locally
+        const prevProgramState = completedExercises[activeTab] || {}
+
+        // Check if all are currently completed
+        const allCompleted = exerciseNames.every(name => prevProgramState[name])
+        const targetState = !allCompleted
+
+        // Create new state updates
+        const updates = {}
+        exerciseNames.forEach(name => {
+            updates[name] = targetState
+        })
+
+        const newProgramState = { ...prevProgramState, ...updates }
+
+        // Update local state immediately
+        const newCompletedExercises = {
+            ...completedExercises,
+            [activeTab]: newProgramState
+        }
+        setCompletedExercises(newCompletedExercises)
+
+        // Save to Firestore
+        saveProgress(newCompletedExercises)
+
+        // Check completion (re-using logic from toggleExercise)
+        let total = 0
+        let completedCount = 0
+
+        activeProgram.sections.forEach(section => {
+            section.subSections.forEach(sub => {
+                sub.exercises.forEach(ex => {
+                    total++
+                    // Use new state for current exercises, old state for others
+                    if (newProgramState[ex.name]) {
+                        completedCount++
+                    }
+                })
+            })
+        })
+
+        // If completed, play sound and save to history
+        if (completedCount === total && total > 0) {
+            const audio = new Audio(completionSound)
+            audio.play().catch(e => console.error('Audio play failed:', e))
+
+            if (currentUser) {
+                try {
+                    const userDocRef = doc(db, 'users', currentUser.uid)
+                    await setDoc(userDocRef, {
+                        history: arrayUnion({
+                            date: new Date().toISOString(),
+                            program: activeTab,
+                            completed: total,
+                            total: total
+                        })
+                    }, { merge: true })
+                } catch (error) {
+                    console.error("Error saving history:", error)
+                }
+            }
+        }
+    }
+
     const handleReset = () => {
         const newCompletedExercises = { ...completedExercises, [activeTab]: {} }
         setCompletedExercises(newCompletedExercises)
@@ -232,6 +297,7 @@ export default function Dashboard() {
                             onPlayVideo={handlePlayVideo}
                             completedExercises={completedExercises[activeTab] || {}}
                             onToggleExercise={toggleExercise}
+                            onToggleGroup={toggleExerciseGroup}
                         />
                     )}
                 </div>
