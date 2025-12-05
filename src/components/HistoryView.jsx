@@ -45,9 +45,14 @@ export default function HistoryView({ history, onClose }) {
                                     </p>
                                 </div>
                                 <div className="text-right">
-                                    <span className="text-sm font-bold text-white bg-neutral-800 px-2 py-1 rounded-md">
+                                    <span className="text-sm font-bold text-white bg-neutral-800 px-2 py-1 rounded-md block mb-1">
                                         {entry.completed} / {entry.total}
                                     </span>
+                                    {entry.duration !== undefined && (
+                                        <span className="text-xs text-neutral-400 block">
+                                            {Math.floor(entry.duration / 60)}m {entry.duration % 60}s
+                                        </span>
+                                    )}
                                 </div>
                             </div>
                         ))

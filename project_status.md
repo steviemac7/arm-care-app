@@ -27,6 +27,7 @@
 - **History Tracking:**
     - Saves completed workouts to Firestore.
     - View history of past workouts.
+    - **Duration Tracking:** Tracks time elapsed for each workout session.
 - **Admin Dashboard:**
     - View all registered users.
     - Inspect user history and progress.

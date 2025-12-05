@@ -17,6 +17,7 @@ export default function Dashboard() {
     const [completedExercises, setCompletedExercises] = useState({})
     const [history, setHistory] = useState([])
     const [showHistory, setShowHistory] = useState(false)
+    const [sessionData, setSessionData] = useState({ startTime: null, lastActivity: null })
     const { currentUser, logout } = useAuth()
 
     // Load progress and history from Firestore
@@ -33,6 +34,7 @@ export default function Dashboard() {
                 const data = doc.data()
                 setCompletedExercises(data.currentProgress || {})
                 setHistory(data.history || [])
+                setSessionData(data.currentSession || { startTime: null, lastActivity: null })
             }
         })
 
@@ -40,11 +42,15 @@ export default function Dashboard() {
     }, [currentUser])
 
     // Helper to save progress to Firestore
-    const saveProgress = async (newProgress) => {
+    const saveProgress = async (newProgress, newSessionData = null) => {
         if (!currentUser) return
         try {
             const userDocRef = doc(db, 'users', currentUser.uid)
-            await setDoc(userDocRef, { currentProgress: newProgress }, { merge: true })
+            const updateData = { currentProgress: newProgress }
+            if (newSessionData) {
+                updateData.currentSession = newSessionData
+            }
+            await setDoc(userDocRef, updateData, { merge: true })
         } catch (error) {
             console.error("Error saving progress:", error)
         }
@@ -62,18 +68,23 @@ export default function Dashboard() {
         const isNowCompleted = !prevProgramState[exerciseName]
         const newProgramState = { ...prevProgramState, [exerciseName]: isNowCompleted }
 
-        // Update local state immediately for responsiveness
+        // Update local state immediately
         const newCompletedExercises = {
             ...completedExercises,
             [activeTab]: newProgramState
         }
         setCompletedExercises(newCompletedExercises)
 
-        // Save to Firestore
-        saveProgress(newCompletedExercises)
+        // Update session timing
+        const now = Date.now()
+        const newSessionData = {
+            startTime: sessionData.startTime || now,
+            lastActivity: now
+        }
+        setSessionData(newSessionData)
 
         // Save to Firestore
-        saveProgress(newCompletedExercises)
+        saveProgress(newCompletedExercises, newSessionData)
     }
 
     const toggleExerciseGroup = async (exerciseNames) => {
@@ -99,11 +110,16 @@ export default function Dashboard() {
         }
         setCompletedExercises(newCompletedExercises)
 
-        // Save to Firestore
-        saveProgress(newCompletedExercises)
+        // Update session timing
+        const now = Date.now()
+        const newSessionData = {
+            startTime: sessionData.startTime || now,
+            lastActivity: now
+        }
+        setSessionData(newSessionData)
 
         // Save to Firestore
-        saveProgress(newCompletedExercises)
+        saveProgress(newCompletedExercises, newSessionData)
     }
 
     const finishWorkout = async () => {
@@ -129,18 +145,30 @@ export default function Dashboard() {
 
             if (currentUser) {
                 try {
+                    // Calculate duration
+                    let durationSeconds = 0
+                    if (sessionData.startTime && sessionData.lastActivity) {
+                        durationSeconds = Math.round((sessionData.lastActivity - sessionData.startTime) / 1000)
+                    }
+
                     const userDocRef = doc(db, 'users', currentUser.uid)
                     await setDoc(userDocRef, {
                         history: arrayUnion({
                             date: new Date().toISOString(),
                             program: activeTab,
                             completed: completedCount,
-                            total: total
-                        })
+                            total: total,
+                            duration: durationSeconds
+                        }),
+                        currentSession: { startTime: null, lastActivity: null } // Reset session
                     }, { merge: true })
 
                     // Optional: Show feedback
-                    alert(`Workout saved! ${completedCount}/${total} exercises completed.`)
+                    const mins = Math.floor(durationSeconds / 60)
+                    const secs = durationSeconds % 60
+                    const timeStr = mins > 0 ? `${mins}m ${secs}s` : `${secs}s`
+
+                    alert(`Workout saved! ${completedCount}/${total} exercises completed in ${timeStr}.`)
                 } catch (error) {
                     console.error("Error saving history:", error)
                     alert("Failed to save workout. Please try again.")
@@ -154,7 +182,8 @@ export default function Dashboard() {
     const handleReset = () => {
         const newCompletedExercises = { ...completedExercises, [activeTab]: {} }
         setCompletedExercises(newCompletedExercises)
-        saveProgress(newCompletedExercises)
+        setSessionData({ startTime: null, lastActivity: null })
+        saveProgress(newCompletedExercises, { startTime: null, lastActivity: null })
     }
 
     // Calculate progress stats
