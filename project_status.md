@@ -8,21 +8,6 @@
 
 ## 2. Tech Stack
 - **Frontend:** React 18 (Vite)
-- **Styling:** Tailwind CSS (Dark Mode / Premium Aesthetic)
-- **Routing:** React Router DOM
-- **Backend / Database:** Firebase (Firestore, Auth)
-- **Icons:** Lucide React
-
-## 3. Key Features Implemented
-    - **Duration Tracking:** Tracks time elapsed for each workout session.
-    - **Sound Removed:** Completion sound disabled per user request.
-- **Admin Dashboard:**
-    - View all registered users.
-    - Inspect user history and progress (including workout duration).
-    - Protected route (accessible only to specific admins).
-
-## 4. Configuration & Security
-- **Environment Variables:** Firebase configuration is secured in a `.env` file (not committed to git).
     - `VITE_FIREBASE_API_KEY`
     - `VITE_FIREBASE_AUTH_DOMAIN`
     - `VITE_FIREBASE_PROJECT_ID`
