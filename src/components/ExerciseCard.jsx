@@ -39,36 +39,6 @@ export default function ExerciseCard({ exercise, onPlayVideo, isCompleted, onTog
     }
 
     useEffect(() => {
-        if (exercise.reps) {
-            const reps = String(exercise.reps).toLowerCase()
-
-            // Explicitly ignore distance-based exercises
-            if (reps.includes('ft')) return
-
-            // Match number followed optionally by space and then sec/min
-            // This handles "60 sec", "60sec", "2 min", "30 sec per side"
-            const match = reps.match(/(\d+)\s*(sec|min)/)
-
-            if (match) {
-                const value = parseInt(match[1])
-                const unit = match[2]
-                let time = 0
-
-                if (unit === 'sec') {
-                    time = value
-                } else if (unit === 'min') {
-                    time = value * 60
-                }
-
-                if (time > 0) {
-                    setDuration(time)
-                    setTimeLeft(time)
-                }
-            }
-        }
-    }, [exercise.reps])
-
-    useEffect(() => {
         let interval = null
         if (isActive && timeLeft > 0) {
             interval = setInterval(() => {
