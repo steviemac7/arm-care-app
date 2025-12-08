@@ -28,6 +28,7 @@
     - Saves completed workouts to Firestore.
     - View history of past workouts.
     - **Duration Tracking:** Tracks time elapsed for each workout session.
+    - **Sound Removed:** Completion sound disabled per user request.
 - **Admin Dashboard:**
     - View all registered users.
     - Inspect user history and progress.

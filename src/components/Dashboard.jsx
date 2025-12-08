@@ -4,7 +4,7 @@ import ProgramView from './ProgramView'
 import VideoModal from './VideoModal'
 import HistoryView from './HistoryView'
 import logo from '../assets/logo.jpg'
-import completionSound from '../assets/completion.m4a'
+
 import { useAuth } from '../contexts/AuthContext'
 import { db } from '../firebase'
 import { doc, setDoc, onSnapshot, arrayUnion } from 'firebase/firestore'
@@ -140,8 +140,6 @@ export default function Dashboard() {
         })
 
         if (completedCount > 0) {
-            const audio = new Audio(completionSound)
-            audio.play().catch(e => console.error('Audio play failed:', e))
 
             if (currentUser) {
                 try {
