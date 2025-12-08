@@ -31,7 +31,7 @@
     - **Sound Removed:** Completion sound disabled per user request.
 - **Admin Dashboard:**
     - View all registered users.
-    - Inspect user history and progress.
+    - Inspect user history and progress (including workout duration).
     - Protected route (accessible only to specific admins).
 
 ## 4. Configuration & Security

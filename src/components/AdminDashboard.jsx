@@ -67,7 +67,14 @@ export default function AdminDashboard() {
                                                 <span className="text-neutral-300">{entry.program}</span>
                                                 <div className="flex gap-4 text-neutral-500">
                                                     <span>{new Date(entry.date).toLocaleDateString()}</span>
-                                                    <span>{entry.completed}/{entry.total}</span>
+                                                    <div className="flex flex-col items-end">
+                                                        <span>{entry.completed}/{entry.total}</span>
+                                                        {entry.duration !== undefined && (
+                                                            <span className="text-xs text-neutral-600">
+                                                                {Math.floor(entry.duration / 60)}m {entry.duration % 60}s
+                                                            </span>
+                                                        )}
+                                                    </div>
                                                 </div>
                                             </div>
                                         ))
