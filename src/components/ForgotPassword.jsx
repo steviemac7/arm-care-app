@@ -1,26 +1,26 @@
 import { useState } from 'react'
 import { useAuth } from '../contexts/AuthContext'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import logo from '../assets/logo.jpg'
 
-export default function Login() {
+export default function ForgotPassword() {
     const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
     const [error, setError] = useState('')
+    const [message, setMessage] = useState('')
     const [loading, setLoading] = useState(false)
-    const { login } = useAuth()
-    const navigate = useNavigate()
+    const { resetPassword } = useAuth()
 
     async function handleSubmit(e) {
         e.preventDefault()
 
         try {
+            setMessage('')
             setError('')
             setLoading(true)
-            await login(email, password)
-            navigate('/')
+            await resetPassword(email)
+            setMessage('Check your inbox for further instructions')
         } catch (err) {
-            setError('Failed to log in. Please check your credentials.')
+            setError('Failed to reset password. Please check if the email is correct.')
             console.error(err)
         }
 
@@ -36,13 +36,19 @@ export default function Login() {
                         alt="Logo"
                         className="w-16 h-16 rounded-full mx-auto mb-4 border-2 border-red-600/50"
                     />
-                    <h2 className="text-2xl font-bold text-white">Welcome Back</h2>
-                    <p className="text-neutral-400 mt-2">Sign in to continue your progress</p>
+                    <h2 className="text-2xl font-bold text-white">Password Recovery</h2>
+                    <p className="text-neutral-400 mt-2">Enter your email to reset your password</p>
                 </div>
 
                 {error && (
                     <div className="bg-red-500/10 border border-red-500/50 text-red-500 p-3 rounded-lg mb-6 text-sm text-center">
                         {error}
+                    </div>
+                )}
+
+                {message && (
+                    <div className="bg-green-500/10 border border-green-500/50 text-green-500 p-3 rounded-lg mb-6 text-sm text-center">
+                        {message}
                     </div>
                 )}
 
@@ -57,36 +63,19 @@ export default function Login() {
                             onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
-                    <div>
-                        <label className="block text-sm font-medium text-neutral-400 mb-1">Password</label>
-                        <input
-                            type="password"
-                            required
-                            className="w-full bg-neutral-950 border border-neutral-800 rounded-lg p-3 text-white focus:outline-none focus:border-red-600 transition-colors"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                    </div>
-
-                    <div className="text-right">
-                        <Link to="/forgot-password" className="text-sm text-red-500 hover:text-red-400">
-                            Forgot Password?
-                        </Link>
-                    </div>
 
                     <button
                         type="submit"
                         disabled={loading}
                         className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-lg transition-all transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        {loading ? 'Signing In...' : 'Sign In'}
+                        {loading ? 'Sending...' : 'Reset Password'}
                     </button>
                 </form>
 
                 <div className="mt-6 text-center text-sm text-neutral-400">
-                    Need an account?{' '}
-                    <Link to="/signup" className="text-red-500 hover:text-red-400 font-medium">
-                        Sign Up
+                    <Link to="/login" className="text-red-500 hover:text-red-400 font-medium">
+                        Back to Login
                     </Link>
                 </div>
             </div>

@@ -14,20 +14,5 @@
     - `VITE_FIREBASE_STORAGE_BUCKET`
     - `VITE_FIREBASE_MESSAGING_SENDER_ID`
     - `VITE_FIREBASE_APP_ID`
-
-## 5. Recent Changes
-- **Security Fix:** Moved hardcoded Firebase credentials from `src/firebase.js` to `.env` to prevent secret leakage.
-- **Admin Features:** Added basic admin dashboard for user management.
-
-## 6. Next Steps / TODO
-- [ ] **Mobile Optimization:** Ensure all views are perfect on mobile devices.
-- [ ] **User Profile:** Allow users to update their details/settings.
-- [ ] **Advanced Analytics:** Show graphs/charts of user consistency over time.
-- [ ] **Content Expansion:** Add more workout programs or levels.
-- [ ] **Deployment:** Set up CI/CD pipeline (e.g., Vercel or Netlify).
-
-## 7. How to Resume Work
-1.  Open this folder in your IDE.
-2.  Run `npm install` (if moving to a new machine).
 3.  Ensure `.env` file exists with valid Firebase credentials.
 4.  Run `npm run dev` to start the local server.
