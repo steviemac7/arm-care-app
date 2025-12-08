@@ -14,19 +14,6 @@
 - **Icons:** Lucide React
 
 ## 3. Key Features Implemented
-- **Authentication:** User login/signup via Firebase Auth.
-- **Dashboard:**
-    - Displays workout programs (Pre-Throwing, Post-Throwing, etc.).
-    - Tracks daily progress with a visual progress bar.
-    - "Reset" functionality for daily routines.
-    - **Manual Submission:** "Finish Workout" button to save progress at any time.
-- **Exercise Interface:**
-    - List of exercises with video tutorials (modal popup).
-    - **Timer/Countdown:** Built-in timer for timed exercises.
-    - Toggle completion status for each exercise.
-- **History Tracking:**
-    - Saves completed workouts to Firestore.
-    - View history of past workouts.
     - **Duration Tracking:** Tracks time elapsed for each workout session.
     - **Sound Removed:** Completion sound disabled per user request.
 - **Admin Dashboard:**
