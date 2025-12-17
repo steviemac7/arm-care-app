@@ -55,7 +55,12 @@ export default function Leaderboard() {
                             : null,
                         avgTime: avgDuration,
                         minTime: minDuration,
-                        maxTime: maxDuration
+                        maxTime: maxDuration,
+                        getLatestComment: () => {
+                            if (processedHistory.length === 0) return null
+                            const sorted = [...processedHistory].sort((a, b) => new Date(b.date) - new Date(a.date))
+                            return sorted[0].comment
+                        }
                     })
                 })
 
@@ -114,6 +119,7 @@ export default function Leaderboard() {
                                         <th className="p-4 font-medium text-right">Avg Time</th>
                                         <th className="p-4 font-medium text-right">Min Time</th>
                                         <th className="p-4 font-medium text-right">Max Time</th>
+                                        <th className="p-4 font-medium text-right">Message</th>
                                         <th className="p-4 font-medium text-right">Last Active</th>
                                     </tr>
                                 </thead>
@@ -138,6 +144,9 @@ export default function Leaderboard() {
                                             </td>
                                             <td className="p-4 text-right text-sm text-neutral-400">
                                                 {Math.floor(user.maxTime / 60)}m {user.maxTime % 60}s
+                                            </td>
+                                            <td className="p-4 text-right text-sm text-neutral-400 italic max-w-xs truncate">
+                                                {user.getLatestComment() || '-'}
                                             </td>
                                             <td className="p-4 text-right text-sm text-neutral-500">
                                                 {user.lastWorkout ? new Date(user.lastWorkout).toLocaleDateString() : '-'}

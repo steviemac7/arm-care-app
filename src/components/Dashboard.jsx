@@ -3,6 +3,7 @@ import { programs } from '../data/exercises'
 import ProgramView from './ProgramView'
 import VideoModal from './VideoModal'
 import HistoryView from './HistoryView'
+import WorkoutCompleteModal from './WorkoutCompleteModal'
 import logo from '../assets/logo.jpg'
 
 import { useAuth } from '../contexts/AuthContext'
@@ -17,6 +18,10 @@ export default function Dashboard() {
     const [completedExercises, setCompletedExercises] = useState({})
     const [history, setHistory] = useState([])
     const [showHistory, setShowHistory] = useState(false)
+
+    // Workout Completion State
+    const [showCompleteModal, setShowCompleteModal] = useState(false)
+    const [pendingWorkoutData, setPendingWorkoutData] = useState(null)
     const [sessionData, setSessionData] = useState({ startTime: null, lastActivity: null })
     const { currentUser, logout } = useAuth()
 
@@ -140,40 +145,57 @@ export default function Dashboard() {
         })
 
         if (completedCount > 0) {
-
-            if (currentUser) {
-                try {
-                    // Calculate duration
-                    let durationSeconds = 0
-                    if (sessionData.startTime && sessionData.lastActivity) {
-                        durationSeconds = Math.round((sessionData.lastActivity - sessionData.startTime) / 1000)
-                    }
-
-                    const userDocRef = doc(db, 'users', currentUser.uid)
-                    await setDoc(userDocRef, {
-                        history: arrayUnion({
-                            date: new Date().toISOString(),
-                            program: activeTab,
-                            completed: completedCount,
-                            total: total,
-                            duration: durationSeconds
-                        }),
-                        currentSession: { startTime: null, lastActivity: null } // Reset session
-                    }, { merge: true })
-
-                    // Optional: Show feedback
-                    const mins = Math.floor(durationSeconds / 60)
-                    const secs = durationSeconds % 60
-                    const timeStr = mins > 0 ? `${mins}m ${secs}s` : `${secs}s`
-
-                    alert(`Workout saved! ${completedCount}/${total} exercises completed in ${timeStr}.`)
-                } catch (error) {
-                    console.error("Error saving history:", error)
-                    alert("Failed to save workout. Please try again.")
-                }
+            // Calculate duration
+            let durationSeconds = 0
+            if (sessionData.startTime && sessionData.lastActivity) {
+                durationSeconds = Math.round((sessionData.lastActivity - sessionData.startTime) / 1000)
             }
+
+            const mins = Math.floor(durationSeconds / 60)
+            const secs = durationSeconds % 60
+            const timeStr = mins > 0 ? `${mins}m ${secs}s` : `${secs}s`
+
+            // Set pending data and show modal
+            setPendingWorkoutData({
+                completedCount,
+                total,
+                durationSeconds,
+                timeStr
+            })
+            setShowCompleteModal(true)
         } else {
             alert("No exercises completed yet!")
+        }
+    }
+
+    const handleSaveWorkout = async (comment) => {
+        if (!currentUser || !pendingWorkoutData) return
+
+        try {
+            const userDocRef = doc(db, 'users', currentUser.uid)
+            await setDoc(userDocRef, {
+                history: arrayUnion({
+                    date: new Date().toISOString(),
+                    program: activeTab,
+                    completed: pendingWorkoutData.completedCount,
+                    total: pendingWorkoutData.total,
+                    duration: pendingWorkoutData.durationSeconds,
+                    comment: comment || ""
+                }),
+                currentSession: { startTime: null, lastActivity: null } // Reset session
+            }, { merge: true })
+
+            setShowCompleteModal(false)
+            setPendingWorkoutData(null)
+
+            // Re-fetch history to update local state immediately if possible, 
+            // but for now we rely on the realtime listener or next load.
+            // Actually, let's just alert success.
+            alert(`Workout saved!`)
+
+        } catch (error) {
+            console.error("Error saving history:", error)
+            alert("Failed to save workout. Please try again.")
         }
     }
 
@@ -331,6 +353,22 @@ export default function Dashboard() {
                 <HistoryView
                     history={history}
                     onClose={() => setShowHistory(false)}
+                />
+            )}
+
+            {/* Workout Complete Modal */}
+            {showCompleteModal && pendingWorkoutData && (
+                <WorkoutCompleteModal
+                    stats={{
+                        completed: pendingWorkoutData.completedCount,
+                        total: pendingWorkoutData.total,
+                        timeStr: pendingWorkoutData.timeStr
+                    }}
+                    onSave={handleSaveWorkout}
+                    onCancel={() => {
+                        setShowCompleteModal(false)
+                        setPendingWorkoutData(null)
+                    }}
                 />
             )}
         </div>
