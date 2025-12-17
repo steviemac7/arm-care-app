@@ -1,6 +1,6 @@
-import { X } from 'lucide-react'
+import { X, Trash2 } from 'lucide-react'
 
-export default function HistoryView({ history, onClose }) {
+export default function HistoryView({ history, onClose, onDelete }) {
     // Sort history by date (newest first)
     const sortedHistory = [...(history || [])].sort((a, b) =>
         new Date(b.date) - new Date(a.date)
@@ -44,8 +44,8 @@ export default function HistoryView({ history, onClose }) {
                                         })}
                                     </p>
                                 </div>
-                                <div className="text-right">
-                                    <span className="text-sm font-bold text-white bg-neutral-800 px-2 py-1 rounded-md block mb-1">
+                                <div className="text-right flex flex-col items-end gap-2">
+                                    <span className="text-sm font-bold text-white bg-neutral-800 px-2 py-1 rounded-md block">
                                         {entry.completed} / {entry.total}
                                     </span>
                                     {entry.duration !== undefined && (
@@ -53,12 +53,24 @@ export default function HistoryView({ history, onClose }) {
                                             {Math.floor(entry.duration / 60)}m {entry.duration % 60}s
                                         </span>
                                     )}
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            if (window.confirm('Are you sure you want to delete this workout?')) {
+                                                onDelete(entry)
+                                            }
+                                        }}
+                                        className="p-1.5 text-neutral-500 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
+                                        title="Delete workout"
+                                    >
+                                        <Trash2 className="w-4 h-4" />
+                                    </button>
                                 </div>
                             </div>
                         ))
                     )}
                 </div>
             </div>
-        </div>
+        </div >
     )
 }

@@ -61,6 +61,28 @@ export default function Dashboard() {
         }
     }
 
+    const handleDeleteWorkout = async (workoutToDelete) => {
+        if (!currentUser) return;
+
+        try {
+            // Filter out the workout to delete
+            // Using date as a unique identifier since it's a timestamp
+            const updatedHistory = history.filter(workout => workout.date !== workoutToDelete.date);
+
+            // Optimistically update local state
+            setHistory(updatedHistory);
+
+            // Update Firestore
+            const userDocRef = doc(db, 'users', currentUser.uid);
+            await setDoc(userDocRef, { history: updatedHistory }, { merge: true });
+
+        } catch (error) {
+            console.error("Error deleting workout:", error);
+            // Revert state if needed (could effectively do this by not updating state until after await, 
+            // but optimistic UI is better. Ideally we fetch again on error)
+        }
+    };
+
     const activeProgram = programs.find(p => p.name === activeTab)
 
     const handlePlayVideo = (url, timestamp) => {
@@ -353,6 +375,7 @@ export default function Dashboard() {
                 <HistoryView
                     history={history}
                     onClose={() => setShowHistory(false)}
+                    onDelete={handleDeleteWorkout}
                 />
             )}
 
