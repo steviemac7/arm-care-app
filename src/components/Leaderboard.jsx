@@ -19,14 +19,29 @@ export default function Leaderboard() {
                     // Only include users who have at least one workout
                     const history = data.history || []
 
+                    // Filter and Process History
+                    // 1. Filter out workouts < 2 minutes (120 seconds)
+                    const validWorkouts = history.filter(entry => (entry.duration || 0) >= 120)
+
+                    // 2. Group by date and keep longest
+                    const dailyWorkouts = {}
+                    validWorkouts.forEach(entry => {
+                        const dateKey = new Date(entry.date).toDateString()
+                        if (!dailyWorkouts[dateKey] || (entry.duration || 0) > dailyWorkouts[dateKey].duration) {
+                            dailyWorkouts[dateKey] = entry
+                        }
+                    })
+
+                    const processedHistory = Object.values(dailyWorkouts)
+
                     let avgDuration = 0
                     let minDuration = 0
                     let maxDuration = 0
 
-                    if (history.length > 0) {
-                        const totalDuration = history.reduce((acc, curr) => acc + (curr.duration || 0), 0)
-                        avgDuration = Math.round(totalDuration / history.length)
-                        const times = history.map(h => h.duration || 0)
+                    if (processedHistory.length > 0) {
+                        const totalDuration = processedHistory.reduce((acc, curr) => acc + (curr.duration || 0), 0)
+                        avgDuration = Math.round(totalDuration / processedHistory.length)
+                        const times = processedHistory.map(h => h.duration || 0)
                         minDuration = Math.min(...times)
                         maxDuration = Math.max(...times)
                     }
@@ -34,8 +49,10 @@ export default function Leaderboard() {
                     leaderboardData.push({
                         id: doc.id,
                         username: data.email ? data.email.split('@')[0] : 'Anonymous',
-                        count: history.length,
-                        lastWorkout: history.length > 0 ? history[history.length - 1]?.date : null,
+                        count: processedHistory.length,
+                        lastWorkout: processedHistory.length > 0
+                            ? processedHistory.sort((a, b) => new Date(b.date) - new Date(a.date))[0]?.date
+                            : null,
                         avgTime: avgDuration,
                         minTime: minDuration,
                         maxTime: maxDuration
