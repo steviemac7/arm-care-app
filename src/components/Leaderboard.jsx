@@ -119,8 +119,8 @@ export default function Leaderboard() {
                                         <th className="p-4 font-medium text-right">Avg Time</th>
                                         <th className="p-4 font-medium text-right">Min Time</th>
                                         <th className="p-4 font-medium text-right">Max Time</th>
-                                        <th className="p-4 font-medium text-right">Message</th>
                                         <th className="p-4 font-medium text-right">Last Active</th>
+                                        <th className="p-4 font-medium text-right">Message</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-neutral-800">
@@ -145,11 +145,11 @@ export default function Leaderboard() {
                                             <td className="p-4 text-right text-sm text-neutral-400">
                                                 {Math.floor(user.maxTime / 60)}m {user.maxTime % 60}s
                                             </td>
-                                            <td className="p-4 text-right text-sm text-neutral-400 italic max-w-xs truncate">
-                                                {user.getLatestComment() || '-'}
-                                            </td>
                                             <td className="p-4 text-right text-sm text-neutral-500">
                                                 {user.lastWorkout ? new Date(user.lastWorkout).toLocaleDateString() : '-'}
+                                            </td>
+                                            <td className="p-4 text-right text-sm text-neutral-400 italic max-w-xs truncate">
+                                                {user.getLatestComment() || '-'}
                                             </td>
                                         </tr>
                                     ))}
