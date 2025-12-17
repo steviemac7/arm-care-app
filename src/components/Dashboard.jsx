@@ -5,12 +5,13 @@ import VideoModal from './VideoModal'
 import HistoryView from './HistoryView'
 import WorkoutCompleteModal from './WorkoutCompleteModal'
 import NicknameModal from './NicknameModal'
+import SafetyWarningModal from './SafetyWarningModal'
 import logo from '../assets/logo.jpg'
 
 import { useAuth } from '../contexts/AuthContext'
 import { db } from '../firebase'
 import { doc, setDoc, onSnapshot, arrayUnion } from 'firebase/firestore'
-import { History, Trophy } from 'lucide-react'
+import { History, Trophy, Play } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 export default function Dashboard() {
@@ -27,6 +28,10 @@ export default function Dashboard() {
     const [pendingWorkoutData, setPendingWorkoutData] = useState(null)
     const [sessionData, setSessionData] = useState({ startTime: null, lastActivity: null })
     const { currentUser, logout } = useAuth()
+
+    // Safety / Start State
+    const [isWorkoutStarted, setIsWorkoutStarted] = useState(false)
+    const [showSafetyModal, setShowSafetyModal] = useState(false)
 
     // Load progress and history from Firestore
     useEffect(() => {
@@ -82,8 +87,6 @@ export default function Dashboard() {
 
         } catch (error) {
             console.error("Error deleting workout:", error);
-            // Revert state if needed (could effectively do this by not updating state until after await, 
-            // but optimistic UI is better. Ideally we fetch again on error)
         }
     };
 
@@ -105,6 +108,11 @@ export default function Dashboard() {
     }
 
     const toggleExercise = async (exerciseName) => {
+        if (!isWorkoutStarted) {
+            alert("Please click 'Start Workout' and review the safety warnings first.")
+            return
+        }
+
         // Calculate new state locally
         const prevProgramState = completedExercises[activeTab] || {}
         const isNowCompleted = !prevProgramState[exerciseName]
@@ -130,6 +138,11 @@ export default function Dashboard() {
     }
 
     const toggleExerciseGroup = async (exerciseNames) => {
+        if (!isWorkoutStarted) {
+            alert("Please click 'Start Workout' and review the safety warnings first.")
+            return
+        }
+
         // Calculate new state locally
         const prevProgramState = completedExercises[activeTab] || {}
 
@@ -225,9 +238,9 @@ export default function Dashboard() {
             setShowCompleteModal(false)
             setPendingWorkoutData(null)
 
-            // Re-fetch history to update local state immediately if possible, 
-            // but for now we rely on the realtime listener or next load.
-            // Actually, let's just alert success.
+            // Reset start state
+            setIsWorkoutStarted(false)
+
             alert(`Workout saved!`)
 
         } catch (error) {
@@ -241,6 +254,7 @@ export default function Dashboard() {
         setCompletedExercises(newCompletedExercises)
         setSessionData({ startTime: null, lastActivity: null })
         saveProgress(newCompletedExercises, { startTime: null, lastActivity: null })
+        setIsWorkoutStarted(false)
     }
 
     // Calculate progress stats
@@ -323,7 +337,7 @@ export default function Dashboard() {
                 </header>
 
                 {/* Tabs */}
-                < div className="flex flex-wrap gap-2 mb-8 justify-center" >
+                <div className="flex flex-wrap gap-2 mb-8 justify-center">
                     {
                         programs.map((program) => (
                             <button
@@ -338,10 +352,23 @@ export default function Dashboard() {
                             </button>
                         ))
                     }
-                </div >
+                </div>
+
+                {/* Start Workout Button - Only show if not started */}
+                {!isWorkoutStarted && (
+                    <div className="w-full flex justify-center mt-6 mb-8">
+                        <button
+                            onClick={() => setShowSafetyModal(true)}
+                            className="flex items-center gap-3 bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-8 rounded-full text-lg shadow-lg shadow-red-900/50 hover:scale-105 transition-all animate-pulse"
+                        >
+                            <Play className="w-6 h-6 fill-current" />
+                            Start Workout
+                        </button>
+                    </div>
+                )}
 
                 {/* Progress Bar (Sticky Top) */}
-                < div className="sticky top-4 z-40 mb-6 bg-neutral-950/90 backdrop-blur-md p-4 rounded-xl border border-neutral-800 shadow-xl" >
+                <div className="sticky top-4 z-40 mb-6 bg-neutral-950/90 backdrop-blur-md p-4 rounded-xl border border-neutral-800 shadow-xl">
                     <div className="flex justify-between text-sm font-medium mb-2">
                         <span className="text-red-500">Progress</span>
                         <div className="flex items-center gap-4">
@@ -368,10 +395,10 @@ export default function Dashboard() {
                             style={{ width: `${progressStats.percent}%` }}
                         />
                     </div>
-                </div >
+                </div>
 
                 {/* Content */}
-                < div className="bg-neutral-900/50 rounded-2xl p-6 shadow-xl border border-neutral-800 backdrop-blur-sm" >
+                <div className="bg-neutral-900/50 rounded-2xl p-6 shadow-xl border border-neutral-800 backdrop-blur-sm">
                     {activeProgram && (
                         <ProgramView
                             program={activeProgram}
@@ -380,61 +407,67 @@ export default function Dashboard() {
                             onToggleExercise={toggleExercise}
                             onToggleGroup={toggleExerciseGroup}
                         />
-                    )
-                    }
-                </div >
-            </div >
+                    )}
+                </div>
+            </div>
 
             {/* Video Modal */}
-            {
-                videoState && (
-                    <VideoModal
-                        videoUrl={videoState.url}
-                        timestamp={videoState.timestamp}
-                        onClose={() => setVideoState(null)}
-                    />
-                )
-            }
+            {videoState && (
+                <VideoModal
+                    videoUrl={videoState.url}
+                    timestamp={videoState.timestamp}
+                    onClose={() => setVideoState(null)}
+                />
+            )}
 
             {/* History Modal */}
-            {
-                showHistory && (
-                    <HistoryView
-                        history={history}
-                        onClose={() => setShowHistory(false)}
-                        onDelete={handleDeleteWorkout}
-                    />
-                )
-            }
+            {showHistory && (
+                <HistoryView
+                    history={history}
+                    onClose={() => setShowHistory(false)}
+                    onDelete={handleDeleteWorkout}
+                />
+            )}
 
             {/* Workout Complete Modal */}
-            {
-                showCompleteModal && pendingWorkoutData && (
-                    <WorkoutCompleteModal
-                        stats={{
-                            completed: pendingWorkoutData.completedCount,
-                            total: pendingWorkoutData.total,
-                            timeStr: pendingWorkoutData.timeStr
-                        }}
-                        onSave={handleSaveWorkout}
-                        onCancel={() => {
-                            setShowCompleteModal(false)
-                            setPendingWorkoutData(null)
-                        }}
-                    />
-                )
-            }
+            {showCompleteModal && pendingWorkoutData && (
+                <WorkoutCompleteModal
+                    stats={{
+                        completed: pendingWorkoutData.completedCount,
+                        total: pendingWorkoutData.total,
+                        timeStr: pendingWorkoutData.timeStr
+                    }}
+                    onSave={handleSaveWorkout}
+                    onCancel={() => {
+                        setShowCompleteModal(false)
+                        setPendingWorkoutData(null)
+                    }}
+                />
+            )}
 
             {/* Nickname Modal */}
-            {
-                showNicknameModal && (
-                    <NicknameModal
-                        currentNickname={nickname}
-                        onSave={handleSaveNickname}
-                        onClose={() => setShowNicknameModal(false)}
-                    />
-                )
-            }
-        </div >
+            {showNicknameModal && (
+                <NicknameModal
+                    currentNickname={nickname}
+                    onSave={handleSaveNickname}
+                    onClose={() => setShowNicknameModal(false)}
+                />
+            )}
+
+            {/* Safety Warning Modal */}
+            {showSafetyModal && (
+                <SafetyWarningModal
+                    onConfirm={() => {
+                        setIsWorkoutStarted(true)
+                        setShowSafetyModal(false)
+                        // Initialize session if needed
+                        if (!sessionData.startTime) {
+                            const now = Date.now()
+                            setSessionData({ startTime: now, lastActivity: now })
+                        }
+                    }}
+                />
+            )}
+        </div>
     )
 }
