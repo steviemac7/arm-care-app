@@ -49,6 +49,7 @@ export default function Leaderboard() {
                     leaderboardData.push({
                         id: doc.id,
                         username: data.email ? data.email.split('@')[0] : 'Anonymous',
+                        nickname: data.nickname || null,
                         count: processedHistory.length,
                         lastWorkout: processedHistory.length > 0
                             ? processedHistory.sort((a, b) => new Date(b.date) - new Date(a.date))[0]?.date
@@ -113,8 +114,9 @@ export default function Leaderboard() {
                             <table className="w-full text-left border-collapse">
                                 <thead>
                                     <tr className="border-b border-neutral-800 bg-neutral-900/80 text-neutral-400 text-sm uppercase tracking-wider whitespace-nowrap">
-                                        <th className="p-4 font-medium w-16 text-center">Rank</th>
+                                        <th className="p-4 font-medium text-center">Rank</th>
                                         <th className="p-4 font-medium">Athlete</th>
+                                        <th className="p-4 font-medium">Nickname</th>
                                         <th className="p-4 font-medium text-right">Workouts</th>
                                         <th className="p-4 font-medium text-right">Avg Time</th>
                                         <th className="p-4 font-medium text-right">Min Time</th>
@@ -132,6 +134,9 @@ export default function Leaderboard() {
                                             <td className="p-4 font-medium text-white">
                                                 {user.username}
                                                 {index === 0 && <span className="ml-2 text-xs bg-yellow-500/10 text-yellow-500 px-2 py-0.5 rounded-full border border-yellow-500/20">Leader</span>}
+                                            </td>
+                                            <td className="p-4 text-neutral-400">
+                                                {user.nickname || '-'}
                                             </td>
                                             <td className="p-4 text-right font-bold text-red-500 text-lg">
                                                 {user.count}

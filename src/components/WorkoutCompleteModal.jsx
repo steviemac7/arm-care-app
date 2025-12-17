@@ -54,11 +54,11 @@ export default function WorkoutCompleteModal({ stats, onSave, onCancel }) {
                                 className="w-full bg-neutral-950 border border-neutral-800 rounded-lg p-3 text-white focus:outline-none focus:border-green-600 transition-colors h-24 resize-none"
                                 value={comment}
                                 onChange={(e) => setComment(e.target.value)}
-                                placeholder="How did it feel? Any PRs?"
-                                maxLength={140}
+                                placeholder="How did it feel? (Max 25 chars)"
+                                maxLength={25}
                             />
                             <div className="text-right text-xs text-neutral-600 mt-1">
-                                {comment.length}/140
+                                {comment.length}/25
                             </div>
                         </div>
 

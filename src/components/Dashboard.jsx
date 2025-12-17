@@ -4,6 +4,7 @@ import ProgramView from './ProgramView'
 import VideoModal from './VideoModal'
 import HistoryView from './HistoryView'
 import WorkoutCompleteModal from './WorkoutCompleteModal'
+import NicknameModal from './NicknameModal'
 import logo from '../assets/logo.jpg'
 
 import { useAuth } from '../contexts/AuthContext'
@@ -18,6 +19,8 @@ export default function Dashboard() {
     const [completedExercises, setCompletedExercises] = useState({})
     const [history, setHistory] = useState([])
     const [showHistory, setShowHistory] = useState(false)
+    const [nickname, setNickname] = useState('')
+    const [showNicknameModal, setShowNicknameModal] = useState(false)
 
     // Workout Completion State
     const [showCompleteModal, setShowCompleteModal] = useState(false)
@@ -40,6 +43,7 @@ export default function Dashboard() {
                 setCompletedExercises(data.currentProgress || {})
                 setHistory(data.history || [])
                 setSessionData(data.currentSession || { startTime: null, lastActivity: null })
+                setNickname(data.nickname || '')
             }
         })
 
@@ -82,6 +86,17 @@ export default function Dashboard() {
             // but optimistic UI is better. Ideally we fetch again on error)
         }
     };
+
+    const handleSaveNickname = async (newNickname) => {
+        if (!currentUser) return
+        try {
+            const userDocRef = doc(db, 'users', currentUser.uid)
+            await setDoc(userDocRef, { nickname: newNickname }, { merge: true })
+            setNickname(newNickname) // Local update (though snapshot will also trigger)
+        } catch (error) {
+            console.error("Error saving nickname:", error)
+        }
+    }
 
     const activeProgram = programs.find(p => p.name === activeTab)
 
@@ -255,145 +270,127 @@ export default function Dashboard() {
 
     return (
         <div className="min-h-screen bg-neutral-950 text-neutral-50 p-4 md:p-8 font-sans pb-24">
-            <div className="max-w-4xl mx-auto">
-                <header className="mb-8 text-center relative">
-                    <div className="absolute right-0 top-0 flex items-center gap-4">
-                        {currentUser?.email === 'stvmcdnld@gmail.com' && (
-                            <Link
-                                to="/admin"
-                                className="text-xs text-red-500 hover:text-red-400 transition-colors font-bold"
-                            >
-                                Admin Panel
-                            </Link>
-                        )}
-                        <Link
-                            to="/leaderboard"
-                            className="text-xs text-neutral-500 hover:text-red-500 transition-colors flex items-center gap-1"
-                        >
-                            <Trophy className="w-3 h-3" />
-                            Leaderboard
-                        </Link>
-                        <button
-                            onClick={() => setShowHistory(true)}
-                            className="text-xs text-neutral-500 hover:text-red-500 transition-colors flex items-center gap-1"
-                        >
-                            <History className="w-3 h-3" />
-                            History
-                        </button>
-                        <button
-                            onClick={logout}
-                            className="text-xs text-neutral-500 hover:text-red-500 transition-colors"
-                        >
-                            Log Out
-                        </button>
-                    </div>
-
-                    <div className="flex items-center justify-center gap-4 mb-4">
-                        <img
-                            src={logo}
-                            alt="Arm Care Pro Logo"
-                            className="w-16 h-16 rounded-full border-2 border-red-600/50 shadow-lg shadow-red-900/20"
-                        />
-                        <h1 className="text-3xl font-bold text-white tracking-tight">
-                            Arm Care Pro
-                        </h1>
-                    </div>
-                    <p className="text-neutral-400">Select your workout program below</p>
-                </header>
-
-                {/* Tabs */}
-                <div className="flex flex-wrap gap-2 mb-8 justify-center">
-                    {programs.map((program) => (
-                        <button
-                            key={program.name}
-                            onClick={() => setActiveTab(program.name)}
-                            className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${activeTab === program.name
-                                ? 'bg-red-600 text-white shadow-lg shadow-red-900/40'
-                                : 'bg-neutral-900 text-neutral-400 hover:bg-neutral-800 hover:text-neutral-200'
-                                }`}
-                        >
-                            {program.name}
-                        </button>
-                    ))}
-                </div>
-
-                {/* Progress Bar (Sticky Top) */}
-                <div className="sticky top-4 z-40 mb-6 bg-neutral-950/90 backdrop-blur-md p-4 rounded-xl border border-neutral-800 shadow-xl">
-                    <div className="flex justify-between text-sm font-medium mb-2">
-                        <span className="text-red-500">Progress</span>
-                        <div className="flex items-center gap-4">
-                            <span className="text-neutral-400">{progressStats.completed} / {progressStats.total} Completed</span>
-                            <button
-                                onClick={finishWorkout}
-                                className="px-3 py-1 bg-red-600 hover:bg-red-500 text-white text-xs font-bold rounded-full transition-colors shadow-lg shadow-red-900/20"
-                            >
-                                Finish Workout
-                            </button>
-                            {progressStats.completed > 0 && (
-                                <button
-                                    onClick={handleReset}
-                                    className="text-xs text-red-500 hover:text-red-400 underline transition-colors"
-                                >
-                                    Reset
-                                </button>
-                            )}
-                        </div>
-                    </div>
-                    <div className="h-3 bg-neutral-900 rounded-full overflow-hidden">
-                        <div
-                            className="h-full bg-gradient-to-r from-red-600 to-red-500 transition-all duration-500 ease-out"
-                            style={{ width: `${progressStats.percent}%` }}
-                        />
-                    </div>
-                </div>
-
-                {/* Content */}
-                <div className="bg-neutral-900/50 rounded-2xl p-6 shadow-xl border border-neutral-800 backdrop-blur-sm">
-                    {activeProgram && (
-                        <ProgramView
-                            program={activeProgram}
-                            onPlayVideo={handlePlayVideo}
-                            completedExercises={completedExercises[activeTab] || {}}
-                            onToggleExercise={toggleExercise}
-                            onToggleGroup={toggleExerciseGroup}
-                        />
-                    )}
-                </div>
+                />
+                <h1 className="text-3xl font-bold text-white tracking-tight">
+                    Arm Care Pro
+                </h1>
             </div>
+            <p className="text-neutral-400">Select your workout program below</p>
+        </header >
 
-            {/* Video Modal */}
-            {videoState && (
-                <VideoModal
-                    videoUrl={videoState.url}
-                    timestamp={videoState.timestamp}
-                    onClose={() => setVideoState(null)}
-                />
-            )}
+        {/* Tabs */ }
+        < div className = "flex flex-wrap gap-2 mb-8 justify-center" >
+        {
+            programs.map((program) => (
+                <button
+                    key={program.name}
+                    onClick={() => setActiveTab(program.name)}
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${activeTab === program.name
+                        ? 'bg-red-600 text-white shadow-lg shadow-red-900/40'
+                        : 'bg-neutral-900 text-neutral-400 hover:bg-neutral-800 hover:text-neutral-200'
+                        }`}
+                >
+                    {program.name}
+                </button>
+            ))
+        }
+    </div >
 
-            {/* History Modal */}
-            {showHistory && (
-                <HistoryView
-                    history={history}
-                    onClose={() => setShowHistory(false)}
-                    onDelete={handleDeleteWorkout}
-                />
-            )}
-
-            {/* Workout Complete Modal */}
-            {showCompleteModal && pendingWorkoutData && (
-                <WorkoutCompleteModal
-                    stats={{
-                        completed: pendingWorkoutData.completedCount,
-                        total: pendingWorkoutData.total,
-                        timeStr: pendingWorkoutData.timeStr
-                    }}
-                    onSave={handleSaveWorkout}
-                    onCancel={() => {
-                        setShowCompleteModal(false)
-                        setPendingWorkoutData(null)
-                    }}
-                />
-            )}
+        {/* Progress Bar (Sticky Top) */ }
+        < div className = "sticky top-4 z-40 mb-6 bg-neutral-950/90 backdrop-blur-md p-4 rounded-xl border border-neutral-800 shadow-xl" >
+        <div className="flex justify-between text-sm font-medium mb-2">
+            <span className="text-red-500">Progress</span>
+            <div className="flex items-center gap-4">
+                <span className="text-neutral-400">{progressStats.completed} / {progressStats.total} Completed</span>
+                <button
+                    onClick={finishWorkout}
+                    className="px-3 py-1 bg-red-600 hover:bg-red-500 text-white text-xs font-bold rounded-full transition-colors shadow-lg shadow-red-900/20"
+                >
+                    Finish Workout
+                </button>
+                {progressStats.completed > 0 && (
+                    <button
+                        onClick={handleReset}
+                        className="text-xs text-red-500 hover:text-red-400 underline transition-colors"
+                    >
+                        Reset
+                    </button>
+                )}
+            </div>
         </div>
+        <div className="h-3 bg-neutral-900 rounded-full overflow-hidden">
+            <div
+                className="h-full bg-gradient-to-r from-red-600 to-red-500 transition-all duration-500 ease-out"
+                style={{ width: `${progressStats.percent}%` }}
+            />
+        </div>
+    </div >
+
+        {/* Content */ }
+        < div className = "bg-neutral-900/50 rounded-2xl p-6 shadow-xl border border-neutral-800 backdrop-blur-sm" >
+            { activeProgram && (
+                <ProgramView
+                    program={activeProgram}
+                    onPlayVideo={handlePlayVideo}
+                    completedExercises={completedExercises[activeTab] || {}}
+                    onToggleExercise={toggleExercise}
+                    onToggleGroup={toggleExerciseGroup}
+                />
+            )
+}
+    </div >
+            </div >
+
+    {/* Video Modal */ }
+{
+    videoState && (
+        <VideoModal
+            videoUrl={videoState.url}
+            timestamp={videoState.timestamp}
+            onClose={() => setVideoState(null)}
+        />
+    )
+}
+
+{/* History Modal */ }
+{
+    showHistory && (
+        <HistoryView
+            history={history}
+            onClose={() => setShowHistory(false)}
+            onDelete={handleDeleteWorkout}
+        />
+    )
+}
+
+{/* Workout Complete Modal */ }
+{
+    showCompleteModal && pendingWorkoutData && (
+        <WorkoutCompleteModal
+            stats={{
+                completed: pendingWorkoutData.completedCount,
+                total: pendingWorkoutData.total,
+                timeStr: pendingWorkoutData.timeStr
+            }}
+            onSave={handleSaveWorkout}
+            onCancel={() => {
+                setShowCompleteModal(false)
+                setPendingWorkoutData(null)
+            }}
+        />
+    )
+}
+
+{/* Nickname Modal */ }
+{
+    showNicknameModal && (
+        <NicknameModal
+            currentNickname={nickname}
+            onSave={handleSaveNickname}
+            onClose={() => setShowNicknameModal(false)}
+        />
+    )
+}
+        </div >
     )
 }
