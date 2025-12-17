@@ -6,6 +6,7 @@ import Signup from './components/Signup'
 import ForgotPassword from './components/ForgotPassword'
 import PrivateRoute from './components/PrivateRoute'
 import AdminDashboard from './components/AdminDashboard'
+import Leaderboard from './components/Leaderboard'
 
 const ADMIN_EMAIL = 'stvmcdnld@gmail.com'
 
@@ -41,6 +42,14 @@ function App() {
               <AdminRoute>
                 <AdminDashboard />
               </AdminRoute>
+            }
+          />
+          <Route
+            path="/leaderboard"
+            element={
+              <PrivateRoute>
+                <Leaderboard />
+              </PrivateRoute>
             }
           />
           <Route path="*" element={<Navigate to="/" />} />

@@ -8,7 +8,7 @@ import logo from '../assets/logo.jpg'
 import { useAuth } from '../contexts/AuthContext'
 import { db } from '../firebase'
 import { doc, setDoc, onSnapshot, arrayUnion } from 'firebase/firestore'
-import { History } from 'lucide-react'
+import { History, Trophy } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 export default function Dashboard() {
@@ -222,6 +222,13 @@ export default function Dashboard() {
                                 Admin Panel
                             </Link>
                         )}
+                        <Link
+                            to="/leaderboard"
+                            className="text-xs text-neutral-500 hover:text-red-500 transition-colors flex items-center gap-1"
+                        >
+                            <Trophy className="w-3 h-3" />
+                            Leaderboard
+                        </Link>
                         <button
                             onClick={() => setShowHistory(true)}
                             className="text-xs text-neutral-500 hover:text-red-500 transition-colors flex items-center gap-1"

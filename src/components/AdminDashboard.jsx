@@ -1,12 +1,24 @@
 import { useState, useEffect } from 'react'
 import { db } from '../firebase'
-import { collection, getDocs } from 'firebase/firestore'
+import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore'
 import { Link } from 'react-router-dom'
-import { ArrowLeft, User } from 'lucide-react'
+import { ArrowLeft, User, Trash2 } from 'lucide-react'
+import DeleteUserModal from './DeleteUserModal'
 
 export default function AdminDashboard() {
     const [users, setUsers] = useState([])
     const [loading, setLoading] = useState(true)
+    const [userToDelete, setUserToDelete] = useState(null)
+
+    const handleDeleteUser = async (userId) => {
+        try {
+            await deleteDoc(doc(db, "users", userId))
+            setUsers(users.filter(user => user.id !== userId))
+        } catch (error) {
+            console.error("Error deleting user:", error)
+            alert("Failed to delete user data.")
+        }
+    }
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -44,7 +56,15 @@ export default function AdminDashboard() {
                 ) : (
                     <div className="grid gap-6">
                         {users.map(user => (
-                            <div key={user.id} className="bg-neutral-900/50 rounded-xl border border-neutral-800 p-6">
+                            <div key={user.id} className="bg-neutral-900/50 rounded-xl border border-neutral-800 p-6 relative group">
+                                <button
+                                    onClick={() => setUserToDelete(user)}
+                                    className="absolute top-4 right-4 p-2 text-neutral-600 hover:text-red-500 hover:bg-red-500/10 rounded-full transition-all opacity-0 group-hover:opacity-100"
+                                    title="Delete User Data"
+                                >
+                                    <Trash2 className="w-5 h-5" />
+                                </button>
+
                                 <div className="flex items-center gap-3 mb-4 pb-4 border-b border-neutral-800">
                                     <div className="bg-neutral-800 p-2 rounded-full">
                                         <User className="w-5 h-5 text-neutral-400" />
@@ -85,6 +105,14 @@ export default function AdminDashboard() {
                             </div>
                         ))}
                     </div>
+                )}
+
+                {userToDelete && (
+                    <DeleteUserModal
+                        userToDelete={userToDelete}
+                        onClose={() => setUserToDelete(null)}
+                        onConfirm={handleDeleteUser}
+                    />
                 )}
             </div>
         </div>
