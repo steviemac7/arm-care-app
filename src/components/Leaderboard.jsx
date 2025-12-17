@@ -90,14 +90,14 @@ export default function Leaderboard() {
                         <div className="overflow-x-auto">
                             <table className="w-full text-left border-collapse">
                                 <thead>
-                                    <tr className="border-b border-neutral-800 bg-neutral-900/80 text-neutral-400 text-sm uppercase tracking-wider">
+                                    <tr className="border-b border-neutral-800 bg-neutral-900/80 text-neutral-400 text-sm uppercase tracking-wider whitespace-nowrap">
                                         <th className="p-4 font-medium w-16 text-center">Rank</th>
                                         <th className="p-4 font-medium">Athlete</th>
                                         <th className="p-4 font-medium text-right">Workouts</th>
                                         <th className="p-4 font-medium text-right">Avg Time</th>
-                                        <th className="p-4 font-medium text-right hidden md:table-cell">Min Time</th>
-                                        <th className="p-4 font-medium text-right hidden md:table-cell">Max Time</th>
-                                        <th className="p-4 font-medium text-right hidden sm:table-cell">Last Active</th>
+                                        <th className="p-4 font-medium text-right">Min Time</th>
+                                        <th className="p-4 font-medium text-right">Max Time</th>
+                                        <th className="p-4 font-medium text-right">Last Active</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-neutral-800">
@@ -116,13 +116,13 @@ export default function Leaderboard() {
                                             <td className="p-4 text-right text-sm text-neutral-300">
                                                 {Math.floor(user.avgTime / 60)}m {user.avgTime % 60}s
                                             </td>
-                                            <td className="p-4 text-right text-sm text-neutral-400 hidden md:table-cell">
+                                            <td className="p-4 text-right text-sm text-neutral-400">
                                                 {Math.floor(user.minTime / 60)}m {user.minTime % 60}s
                                             </td>
-                                            <td className="p-4 text-right text-sm text-neutral-400 hidden md:table-cell">
+                                            <td className="p-4 text-right text-sm text-neutral-400">
                                                 {Math.floor(user.maxTime / 60)}m {user.maxTime % 60}s
                                             </td>
-                                            <td className="p-4 text-right text-sm text-neutral-500 hidden sm:table-cell">
+                                            <td className="p-4 text-right text-sm text-neutral-500">
                                                 {user.lastWorkout ? new Date(user.lastWorkout).toLocaleDateString() : '-'}
                                             </td>
                                         </tr>
