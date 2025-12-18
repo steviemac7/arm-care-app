@@ -286,7 +286,7 @@ export default function Dashboard() {
         <div className="min-h-screen bg-neutral-950 text-neutral-50 p-4 md:p-8 font-sans pb-24">
             <div className="max-w-4xl mx-auto">
                 <header className="mb-8 text-center relative">
-                    <div className="absolute right-0 top-0 flex items-center gap-4">
+                    <div className="flex justify-center md:absolute md:right-0 md:top-0 items-center gap-4 mb-4 md:mb-0">
                         {currentUser?.email === 'stvmcdnld@gmail.com' && (
                             <Link
                                 to="/admin"
